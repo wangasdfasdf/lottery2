@@ -1,0 +1,13 @@
+<?php
+namespace app\model\filter;
+
+
+use app\model\abstract\QueryFilter;
+
+
+class {{Model}}Filter extends QueryFilter
+{
+
+{{method}}
+
+}

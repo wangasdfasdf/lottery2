@@ -1,0 +1,7 @@
+<?php
+namespace app\service;
+
+class {{Model}}Service extends BaseService
+{
+    public $model = 'app\model\{{Model}}';
+}
