@@ -4,6 +4,7 @@ namespace app\service;
 use app\model\LotteryBdSfResult;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Http;
+use support\Log;
 
 class LotteryBdSfResultService extends BaseService
 {
@@ -24,6 +25,11 @@ class LotteryBdSfResultService extends BaseService
         }
 
         $body = json_decode((string)$result->getBody(), true);
+
+        Log::info('sadf', $body);
+        if (!isset($body['code']) || $body['code'] != 0) {
+            return;
+        }
 
         $data = $body['data'];
 
