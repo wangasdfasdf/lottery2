@@ -25,7 +25,6 @@ class LotteryBdSfResultService extends BaseService
 
         $body = json_decode((string)$result->getBody(), true);
 
-
         $data = $body['data'];
 
         foreach ($data as $item) {
