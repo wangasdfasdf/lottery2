@@ -15,7 +15,7 @@ class LotteryBdResultService extends BaseService
     /**
      * @throws GuzzleException
      */
-    public function capture()
+    public function capture(): void
     {
         $user = config('nmsj.user');
         $secret = config('nmsj.secret');
@@ -31,7 +31,6 @@ class LotteryBdResultService extends BaseService
 
         $body = json_decode((string)$result->getBody(), true);
 
-        var_dump($body);
         if (!isset($body['code']) || $body['code'] != 0) {
             return;
         }
