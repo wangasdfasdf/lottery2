@@ -25,13 +25,13 @@ class LotteryBdResultService extends BaseService
 
         $result = $client->get($url,  ['query' => compact('user', 'secret')]);
 
-        dd($result->getStatusCode());
         if ($result->getStatusCode() !== 200) {
             return;
         }
 
         $body = json_decode((string)$result->getBody(), true);
 
+        d($body);
         if (!isset($body['code']) || $body['code'] != 0) {
             return;
         }
