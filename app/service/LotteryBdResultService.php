@@ -31,7 +31,6 @@ class LotteryBdResultService extends BaseService
 
         $body = json_decode((string)$result->getBody(), true);
 
-        d($body);
         if (!isset($body['code']) || $body['code'] != 0) {
             return;
         }
