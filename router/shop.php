@@ -26,7 +26,7 @@ Route::group("/shop/v1/", function () {
         Route::delete("feedback/{id:\d+}", [AgentFeedbackController::class, 'destroy']);
 
         //三方接口
-        Route::get('third', [LotteryController::class, 'thirdResult']);
+        Route::post('third', [LotteryController::class, 'thirdResult']);
 
         //上传
         Route::post('upload', [UploadController::class, 'upload']);
