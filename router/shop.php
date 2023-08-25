@@ -1,6 +1,7 @@
 <?php
 
 use app\controller\shop\AgentFeedbackController;
+use app\controller\shop\AgentOrderController;
 use app\controller\shop\AuthController;
 use app\controller\shop\LotteryController;
 use app\controller\shop\UploadController;
@@ -24,6 +25,13 @@ Route::group("/shop/v1/", function () {
         Route::put("feedback/{id:\d+}", [AgentFeedbackController::class, 'update']);
         Route::get("feedback/{id:\d+}", [AgentFeedbackController::class, 'show']);
         Route::delete("feedback/{id:\d+}", [AgentFeedbackController::class, 'destroy']);
+
+        Route::post('order', [AgentOrderController::class, 'store']);
+        Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
+        Route::put('order/{id}', [AgentOrderController::class, 'update']);
+        Route::get('order', [AgentOrderController::class, 'index']);
+        Route::get('order/{id}', [AgentOrderController::class, 'show']);
+
 
         //三方接口
         Route::post('third', [LotteryController::class, 'thirdResult']);

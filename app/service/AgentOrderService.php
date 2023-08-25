@@ -226,6 +226,7 @@ class AgentOrderService extends BaseService
     public function statistical(string $startTime, string $endTime, array $shopId): array
     {
         $shopId = array_filter($shopId);
+
         $model  = AgentOrder::query()->when($startTime, function (Builder $query) use ($startTime) {
             $query->where('created_at', '>=', $startTime);
         })->when($endTime, function (Builder $query) use ($endTime) {
