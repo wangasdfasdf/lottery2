@@ -8,6 +8,7 @@ use app\model\filter\AgentShopFilter;
 use app\service\AgentService;
 use app\service\AgentShopService;
 use Exception;
+use support\exception\DdException;
 use support\exception\TipsException;
 use support\Request;
 use support\Response;
@@ -53,6 +54,7 @@ class AgentShopController extends Controller
      *
      * @param int $id
      * @return Response
+     * @throws DdException
      */
     public function show(int $id): Response
     {

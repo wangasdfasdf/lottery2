@@ -24,7 +24,7 @@ Route::group("/agent/v1/", function () {
         //店铺
         Route::post('shop', [AgentShopController::class, 'store']);
         Route::get('shop', [AgentShopController::class, 'index']);
-        Route::get('shop/{id\d+}', [AgentShopController::class, 'show']);
+        Route::get('shop/{id:\d+}', [AgentShopController::class, 'show']);
         Route::put('shop/{id}', [AgentShopController::class, 'update']);
         Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
 
