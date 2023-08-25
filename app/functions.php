@@ -56,3 +56,106 @@ if (!function_exists('now')) {
         return Date::now($tz);
     }
 }
+
+if (!function_exists('getRandomOrderNum')){
+    function getRandomOrderNum($end, $prefix = ''): string
+    {
+        $full = (string)(rand(0, 9999999999999999)) . (string)(rand(0, 9999999999999999));
+        return substr($prefix . $full, 0, $end);
+    }
+}
+
+if(!function_exists('generateRandomString')){
+    function generateRandomString($lens, $letters, $numbers, $letterCount): string
+    {
+        $randomString = '';
+        // 生成位置索引数组
+        $positions = range(0, $lens - 1);
+        shuffle($positions); // 随机打乱位置索引数组顺序
+        // 插入英文字母
+        for ($i = 0; $i < $letterCount; $i++) {
+            $position = $positions[$i];
+            $randomString = substr($randomString, 0, $position) . $letters[rand(0, count($letters) - 1)] .
+                substr($randomString, $position);
+        }
+
+        // 插入数字
+        for ($i = $letterCount; $i < $lens; $i++) {
+            $position = $positions[$i];
+            $randomString = substr($randomString, 0, $position) . $numbers[rand(0, count($numbers) - 1)] .
+                substr($randomString, $position);
+        }
+        return $randomString;
+    }
+}
+
+if (!function_exists('getRandomSuffix_jc')){
+    function getRandomSuffix_jc(): string
+    {
+        $lens = 8;
+        $letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+        $numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $letterCount = rand(3, 5);
+        return generateRandomString($lens, $letters, $numbers, $letterCount);
+    }
+
+}
+
+if (!function_exists('getRandomSuffix_bd')){
+    function getRandomSuffix_bd(): string
+    {
+        $lens = 13;
+        $letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T",
+            "U", "V", "W", "X", "Y", "Z"
+        ];
+        $numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $letterCount = rand(6, 10);
+        return generateRandomString($lens, $letters, $numbers, $letterCount);
+    }
+}
+
+if (!function_exists('getRandomSuffix_pls')){
+    function getRandomSuffix_pls(): string
+    {
+        $lens = 6;
+        $letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "P", "Q", "R", "S", "T",
+            "U", "V", "W", "X", "Y", "Z", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "p", "q",
+            "r", "s", "t", "u", "v", "w", "x", "y", "z", "+"
+        ];
+        $numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+        $letterCount = rand(3, 5);
+        $randomString = '';
+        $positions = range(0, $lens - 1);
+        shuffle($positions);
+        for ($i = 0; $i < $letterCount; $i++) {
+            $position = $positions[$i];
+            $letterIndex = str_contains($randomString, '+') ? rand(0, count($letters) - 2) : rand(0, count($letters) - 1);
+            $randomString = substr($randomString, 0, $position) . $letters[$letterIndex] . substr($randomString, $position);
+        }
+        for ($i = $letterCount; $i < $lens; $i++) {
+            $position = $positions[$i];
+            $randomString = substr($randomString, 0, $position) . $numbers[rand(0, count($numbers) - 1)] . substr($randomString, $position);
+        }
+        return $randomString;
+    }
+
+}
+
+
+if (!function_exists('get_order_num')){
+    function get_order_num($match_type, $order_prefix = ''): string
+    {
+        // 顶部订单编号生成
+        if ($match_type == 'bjdc') {
+            // 6位-6位-6位-6位，北单指定要求字符串
+            return getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . ',' . getRandomSuffix_bd();
+        } elseif ($match_type == 'pls') {
+            // 6位-6位-6位-6位-6位，排列三指定要求字符串
+            return getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . '-' . getRandomOrderNum(6) . ',' . getRandomOrderNum(6) . ',' . getRandomSuffix_pls();
+        } else {
+            // 24位指定前缀数字这里的前缀是/shop/v1/info返回的order_prefix字段），8位数字，竞彩指定要求字符串
+            return getRandomOrderNum(24, $order_prefix) . ',' . getRandomOrderNum(8) . ',' . getRandomSuffix_jc();
+        }
+    }
+
+}
