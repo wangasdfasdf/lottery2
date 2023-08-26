@@ -22,6 +22,7 @@ Route::group("/shop/v1/", function () {
 
         Route::get('info', [AgentShopController::class, 'info']);
         Route::put('info', [AgentShopController::class, 'update']);
+        Route::get('address', [AgentShopController::class, 'addAddress']);
 
         // 问题反馈
         Route::get('feedback/read', [AgentFeedbackController::class, 'isRead']);

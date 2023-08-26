@@ -2,6 +2,7 @@
 
 
 use app\controller\agent\AgentConfigController;
+use app\controller\agent\AgentController;
 use app\controller\agent\AgentFeedbackController;
 use app\controller\agent\AgentShopController;
 use app\controller\agent\AuthController;
@@ -20,6 +21,8 @@ Route::group("/agent/v1/", function () {
         //详情
         Route::get('info', [AuthController::class, 'info']);
         Route::put('info', [AuthController::class, 'update']);
+        Route::get('address', [AgentController::class, 'address']);
+
 
         //店铺
         Route::post('shop', [AgentShopController::class, 'store']);

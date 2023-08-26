@@ -44,9 +44,9 @@ class AgentShopController extends Controller
 
     public function addAddress(Request $request): Response
     {
-        $shopId = $request->input('shop_id');
+        $shop_id = $request->input('shop_id');
 
-        $shop = AgentShopService::instance()->setWalletAddress($shopId);
+        $shop = AgentShopService::instance()->setWalletAddress($shop_id);
 
         return Response::success($shop);
     }

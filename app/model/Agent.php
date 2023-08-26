@@ -18,6 +18,9 @@ use Illuminate\Support\Carbon;
  * @property string $token
  * @property string $status
  * @property string $tag
+ * @property int $account_days
+ * @property string $wallet_address_img
+ * @property string $wallet_address
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
@@ -75,5 +78,7 @@ class Agent extends BaseModel
         'deleted_at', //
         'tag', //
         'account_days', //
+        'wallet_address_img', //
+        'wallet_address', //
     ];
 }

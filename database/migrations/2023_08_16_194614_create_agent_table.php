@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('name')->default('')->comment('昵称');
             $table->string('avatar')->default('')->comment('头像');
             $table->string('token')->default('')->comment('token');
-            $table->tinyInteger('account_days')->default(0)->comment('账户天数');
+            $table->decimal('account_days', 10,2)->default(0)->comment('账户天数');
             $table->string('tag')->default('')->comment('账户天数');
             $table->string('status')->default('enable')->comment('状态 enable:启用 disable:禁用');
             $table->timestamps();

@@ -4,6 +4,7 @@ namespace app\command;
 
 use app\model\AgentShop;
 use app\service\AgentService;
+use app\service\AgentWalletPaymentLogService;
 use app\service\LotteryBdResultService;
 use app\service\LotteryBdSfResultService;
 use app\service\LotteryJcResultService;
@@ -36,11 +37,9 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        LotteryBdResultService::instance()->capture();
-        LotteryBdSfResultService::instance()->capture();
-        LotteryJcResultService::instance()->capture();
-        LotteryPlsResultService::instance()->capture();
-        LotteryPlwResultService::instance()->capture();
+
+        AgentWalletPaymentLogService::instance()->capture();
+
         return self::SUCCESS;
     }
 
