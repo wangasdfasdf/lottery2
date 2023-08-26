@@ -1,7 +1,9 @@
 <?php
 
+
 use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
+use app\controller\shop\AgentShopController;
 use app\controller\shop\AuthController;
 use app\controller\shop\LotteryController;
 use app\controller\shop\UploadController;
@@ -17,6 +19,9 @@ Route::group("/shop/v1/", function () {
     Route::get('version', [VersionController::class, 'show']);
 
     Route::group("", function () {
+
+        Route::get('info', [AgentShopController::class, 'info']);
+        Route::put('info', [AgentShopController::class, 'update']);
 
         // 问题反馈
         Route::get('feedback/read', [AgentFeedbackController::class, 'isRead']);
