@@ -3,6 +3,8 @@
 
 use app\controller\admin\AdminUserController;
 use app\controller\admin\AgentController;
+use app\controller\admin\AgentOrderController;
+use app\controller\admin\AgentShopController;
 use app\controller\admin\AgentWalletPaymentLogController;
 use app\controller\admin\AppVersionController;
 use app\controller\admin\AuthController;
@@ -44,6 +46,16 @@ Route::group("/admin/v1/", function () {
         //更新版本
         Route::get('app-version', [AppVersionController::class, 'index']);
         Route::post('app-version', [AppVersionController::class, 'store']);
+
+        Route::get('order', [AgentOrderController::class, 'index']);
+        Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
+
+        //店铺
+        Route::get('shop', [AgentShopController::class, 'index']);
+        Route::get('shop/{id:\d+}', [AgentShopController::class, 'show']);
+//        Route::post('shop', [AgentShopController::class, 'store']);
+//        Route::put('shop/{id}', [AgentShopController::class, 'update']);
+//        Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
 
         //版本设置
         Route::post('version', [VersionController::class, 'store']);

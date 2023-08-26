@@ -5,6 +5,7 @@ use app\controller\agent\AgentAccountDaysLogController;
 use app\controller\agent\AgentConfigController;
 use app\controller\agent\AgentController;
 use app\controller\agent\AgentFeedbackController;
+use app\controller\agent\AgentOrderController;
 use app\controller\agent\AgentShopController;
 use app\controller\agent\AgentWalletPaymentLogController;
 use app\controller\agent\AuthController;
@@ -32,6 +33,9 @@ Route::group("/agent/v1/", function () {
         Route::get('shop/{id:\d+}', [AgentShopController::class, 'show']);
         Route::put('shop/{id}', [AgentShopController::class, 'update']);
         Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
+
+        Route::get('order', [AgentOrderController::class, 'index']);
+        Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
 
         //配置
         Route::get('config/{key}', [ConfigController::class, 'info']);
