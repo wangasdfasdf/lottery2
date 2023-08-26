@@ -26,7 +26,6 @@ class LotteryBdSfResultService extends BaseService
 
         $body = json_decode((string)$result->getBody(), true);
 
-        Log::info('sadf', $body);
         if (!isset($body['code']) || $body['code'] != 0) {
             return;
         }
