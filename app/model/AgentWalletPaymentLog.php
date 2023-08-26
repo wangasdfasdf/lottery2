@@ -75,4 +75,9 @@ class AgentWalletPaymentLog extends BaseModel
         'deleted_at', //
         'days', //
     ];
+
+    protected $hidden = [
+      'deleted_at',
+      'result',
+    ];
 }

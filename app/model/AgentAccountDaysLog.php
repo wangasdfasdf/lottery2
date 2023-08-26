@@ -69,4 +69,9 @@ class AgentAccountDaysLog extends BaseModel
         'deleted_at', //
         'other', //
     ];
+
+    protected $hidden = [
+        'deleted_at',
+        'other',
+    ];
 }

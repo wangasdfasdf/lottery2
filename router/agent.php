@@ -1,10 +1,12 @@
 <?php
 
 
+use app\controller\agent\AgentAccountDaysLogController;
 use app\controller\agent\AgentConfigController;
 use app\controller\agent\AgentController;
 use app\controller\agent\AgentFeedbackController;
 use app\controller\agent\AgentShopController;
+use app\controller\agent\AgentWalletPaymentLogController;
 use app\controller\agent\AuthController;
 use app\controller\agent\ConfigController;
 use app\controller\agent\UploadController;
@@ -43,6 +45,12 @@ Route::group("/agent/v1/", function () {
         //问题反馈
         Route::get("feedback", [AgentFeedbackController::class, 'index']);
         Route::put("feedback/{id:\d+}", [AgentFeedbackController::class, 'update']);
+
+        //账户记录
+        Route::get('account-day/log', [AgentAccountDaysLogController::class, 'index']);
+
+        //钱包记录
+        Route::get("wallet-payment-log", [AgentWalletPaymentLogController::class, 'index']);
 
         //上传
         Route::post('upload', [UploadController::class, 'upload']);

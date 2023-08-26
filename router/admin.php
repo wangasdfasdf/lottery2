@@ -3,6 +3,7 @@
 
 use app\controller\admin\AdminUserController;
 use app\controller\admin\AgentController;
+use app\controller\admin\AgentWalletPaymentLogController;
 use app\controller\admin\AppVersionController;
 use app\controller\admin\AuthController;
 use app\controller\admin\ConfigController;
@@ -47,7 +48,8 @@ Route::group("/admin/v1/", function () {
         //版本设置
         Route::post('version', [VersionController::class, 'store']);
 
-
+        //钱包记录
+        Route::get("wallet-payment-log", [AgentWalletPaymentLogController::class, 'index']);
         //上传
         Route::post('upload', [UploadController::class, 'upload']);
     })->middleware([

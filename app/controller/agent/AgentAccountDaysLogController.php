@@ -1,12 +1,13 @@
 <?php
-namespace app\controller;
+namespace app\controller\agent;
 
+use app\controller\Controller;
 use app\model\filter\AgentAccountDaysLogFilter;
 use app\service\AgentAccountDaysLogService;
 use Exception;
+use support\exception\TipsException;
 use support\Request;
 use support\Response;
-use support\exception\TipsException;
 
 class AgentAccountDaysLogController extends Controller
 {
