@@ -42,6 +42,10 @@ class LotteryPlwResultService extends BaseService
 
             $prizeLevelList = \array_column($item['prizeLevelList'], 'stakeAmount', 'prizeLevel');
 
+            if (empty($prizeLevelList)){
+                continue;
+            }
+
             LotteryPlwResult::query()->firstOrCreate([
                 'issue' => $item['lotteryDrawNum'],
             ], [

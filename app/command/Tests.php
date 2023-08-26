@@ -38,6 +38,8 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        LotteryPlsResultService::instance()->capture();
+
         AgentWalletPaymentLogService::instance()->capture();
 
         return self::SUCCESS;

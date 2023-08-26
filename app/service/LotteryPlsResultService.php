@@ -39,7 +39,12 @@ class LotteryPlsResultService extends BaseService
 
             $prizeLevelList = \array_column($item['prizeLevelList'], 'stakeAmount', 'prizeLevel');
 
+            if (empty($prizeLevelList)){
+                continue;
+            }
+
             $tmpArr = \explode(' ', $item['lotteryDrawResult']);
+
             LotteryPlsResult::query()->firstOrCreate([
                 'issue' => $item['lotteryDrawNum'],
             ], [
