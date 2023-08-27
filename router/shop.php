@@ -5,6 +5,7 @@ use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
 use app\controller\shop\AgentShopController;
 use app\controller\shop\AuthController;
+use app\controller\shop\HistoryMatchController;
 use app\controller\shop\LotteryController;
 use app\controller\shop\UploadController;
 use app\controller\shop\VersionController;
@@ -38,12 +39,16 @@ Route::group("/shop/v1/", function () {
         Route::get('order', [AgentOrderController::class, 'index']);
         Route::get('order/{id}', [AgentOrderController::class, 'show']);
 
-
         //三方接口
         Route::post('third', [LotteryController::class, 'thirdResult']);
 
         //上传
         Route::post('upload', [UploadController::class, 'upload']);
+
+        //历史数据
+        Route::get('history/match/{path}', [HistoryMatchController::class, 'show']);
+        Route::get('history/day', [HistoryMatchController::class, 'day']);
+
     })->middleware([
         CheckShopLogin::class,
     ]);
