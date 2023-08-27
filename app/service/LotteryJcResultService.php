@@ -8,7 +8,7 @@ class LotteryJcResultService extends BaseService
 {
     public $model = 'app\model\LotteryJcResult';
 
-    public function capture()
+    public function capture(): void
     {
         $user   = config('nmsj.user');
         $secret = config('nmsj.secret');
@@ -83,4 +83,5 @@ class LotteryJcResultService extends BaseService
             $model->save();
         }
     }
+
 }

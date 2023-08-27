@@ -8,6 +8,7 @@ use app\service\AgentWalletPaymentLogService;
 use app\service\LotteryBdResultService;
 use app\service\LotteryBdSfResultService;
 use app\service\LotteryJcResultService;
+use app\service\LotteryJcService;
 use app\service\LotteryPlsResultService;
 use app\service\LotteryPlwResultService;
 use Symfony\Component\Console\Command\Command;
@@ -37,10 +38,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
-        LotteryPlsResultService::instance()->capture();
-
-        AgentWalletPaymentLogService::instance()->capture();
+        LotteryJcService::instance()->history();
 
         return self::SUCCESS;
     }
