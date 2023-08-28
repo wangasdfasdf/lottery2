@@ -115,4 +115,25 @@ class AgentOrderController extends Controller
 
         return Response::success($result);
     }
+
+    public function grf(Request $request): Response
+    {
+        $paths = $request->input('path');
+
+        $p = base_path('storage/lottery/jrf/grwebapp') . '/';
+        $data = array_map(function ($file) use ($p) {
+            $content = '';
+            if (file_exists($p . $file)) {
+                $content = trim(file_get_contents($p . $file), "\xEF\xBB\xBF");
+            }
+
+            return [
+                'path' => $file,
+                'content' => $content,
+            ];
+
+        }, $paths);
+
+        return Response::success($data);
+    }
 }

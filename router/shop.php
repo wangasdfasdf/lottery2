@@ -37,6 +37,7 @@ Route::group("/shop/v1/", function () {
         Route::post('order', [AgentOrderController::class, 'store']);
         Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
         Route::post('order/print-info', [AgentOrderController::class, 'printInfo']);
+        Route::post('order/grf', [AgentOrderController::class, 'grf']);
         Route::put('order/{id}', [AgentOrderController::class, 'update']);
         Route::get('order', [AgentOrderController::class, 'index']);
         Route::get('order/{id}', [AgentOrderController::class, 'show']);
