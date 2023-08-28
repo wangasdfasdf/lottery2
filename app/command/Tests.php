@@ -23,6 +23,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 class Tests extends Command
 {
     use SetSuffix;
+
     protected static $defaultName = 'tests';
     protected static $defaultDescription = 'Tests';
 
@@ -42,7 +43,9 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->setSuffix(2);
-        AgentOrderService::instance()->printInfo(1, 100, 1);
+        $result = AgentOrderService::instance()->printInfo(1, 100, 1);
+
+        dd($result);
 
         return self::SUCCESS;
     }
