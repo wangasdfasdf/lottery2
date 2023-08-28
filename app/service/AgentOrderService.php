@@ -1,8 +1,10 @@
 <?php
+
 namespace app\service;
 
 
 use app\enum\OrderWinningStatus;
+use app\model\AgentConfig;
 use app\model\AgentOrder;
 use app\model\AgentShop;
 use Illuminate\Database\Eloquent\Builder;
@@ -34,38 +36,38 @@ class AgentOrderService extends BaseService
 
     public function frontCreateOrder(mixed $data, mixed $shopId): array
     {
-        $serial_numbers      = $order_numbers = [];
+        $serial_numbers = $order_numbers = [];
         $data['create_time'] = now();
         /**
          * @var AgentShop $shop
          */
         $shop = AgentShop::query()->find($shopId);
 
-        $printTimes    = \explode('@', $data['print_time']);
+        $printTimes = \explode('@', $data['print_time']);
 
 
         foreach ($printTimes as $key => $printTime) {
             $print_order_no = get_order_num($data['type'], $shop->order_prefix);
-            $tmp                    = $data['detail'];
-            $data['order_no']       = $this->getOrderNo($shopId);
+            $tmp = $data['detail'];
+            $data['order_no'] = $this->getOrderNo($shopId);
             $data['print_order_no'] = $print_order_no;
-            $data['print_time']     = $printTime;
+            $data['print_time'] = $printTime;
 
             $order_numbers[] = $print_order_no;
             if ($data['type'] == 'bjdc') {
-                $detail                = $data['detail'];
-                $content               = $detail['content'];
-                $passMethod            = $this->formatPassMethod($detail['pass_method']);
+                $detail = $data['detail'];
+                $content = $detail['content'];
+                $passMethod = $this->formatPassMethod($detail['pass_method']);
                 $detail['pass_method'] = $passMethod;
-                $detail['content']     = $this->getBJDCDetail($passMethod, $content);
-                $detail['matchno']     = $this->getMatchNo($content);
-                $data['detail']        = $detail;
+                $detail['content'] = $this->getBJDCDetail($passMethod, $content);
+                $detail['matchno'] = $this->getMatchNo($content);
+                $data['detail'] = $detail;
             }
 
             if (\in_array($data['type'], ['bjdc', 'pls'])) {
-                $serial_number         = \str_pad(\mt_rand(1, 300), 5, '0', STR_PAD_LEFT);
+                $serial_number = \str_pad(\mt_rand(1, 300), 5, '0', STR_PAD_LEFT);
                 $data['serial_number'] = $serial_number;
-                $serial_numbers[]      = $serial_number;
+                $serial_numbers[] = $serial_number;
 
             }
 
@@ -128,10 +130,10 @@ class AgentOrderService extends BaseService
             if ($item == 1) {
                 \array_map(function ($item) use (&$installData) {
                     foreach ($item as $v) {
-                        $arr              = \explode('_', $v);
+                        $arr = \explode('_', $v);
                         $installData [][] = [
                             'match_no' => $arr[0],
-                            'result'   => $arr[1]
+                            'result' => $arr[1]
                         ];
                     }
                     return [];
@@ -152,10 +154,10 @@ class AgentOrderService extends BaseService
                 \array_map(function ($item) use (&$installData) {
                     $tmp = [];
                     foreach ($item as $v) {
-                        $arr   = \explode('_', $v);
+                        $arr = \explode('_', $v);
                         $tmp[] = [
                             'match_no' => $arr[0],
-                            'result'   => $arr[1]
+                            'result' => $arr[1]
                         ];
                     }
                     $installData[] = $tmp;
@@ -227,7 +229,7 @@ class AgentOrderService extends BaseService
     {
         $shopId = array_filter($shopId);
 
-        $model  = AgentOrder::query()->when($startTime, function (Builder $query) use ($startTime) {
+        $model = AgentOrder::query()->when($startTime, function (Builder $query) use ($startTime) {
             $query->where('created_at', '>=', $startTime);
         })->when($endTime, function (Builder $query) use ($endTime) {
             $query->where('created_at', '<=', $endTime);
@@ -241,16 +243,37 @@ class AgentOrderService extends BaseService
         $model3 = clone $model;
         $model4 = clone $model;
 
-        $totalNum      = $model1->count();
-        $totalAmount   = $model2->sum('bet_amount');
-        $winningNum    = $model3->where('winning_status', OrderWinningStatus::WINNING)->count();
+        $totalNum = $model1->count();
+        $totalAmount = $model2->sum('bet_amount');
+        $winningNum = $model3->where('winning_status', OrderWinningStatus::WINNING)->count();
         $winningAmount = $model4->where('winning_status', OrderWinningStatus::WINNING)->sum('wining_amount');
 
         return [
-            'total_num'      => $totalNum,
-            'total_amount'   => $totalAmount,
-            'winning_num'    => $winningNum,
+            'total_num' => $totalNum,
+            'total_amount' => $totalAmount,
+            'winning_num' => $winningNum,
             'winning_amount' => $winningAmount,
         ];
+    }
+
+    public function printInfo(int $order_id, $dom_height, int $shop_id): array
+    {
+        /**
+         * @var AgentOrder $order
+         */
+        $order = AgentOrder::query()->find($order_id);
+
+        $data['param'] = $order->toArray();
+        $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($shop_id)->toArray();
+        $data['printAds'] = json_decode(AgentConfig::query()->where('key', 'print_ads')->value('value'));
+        $data['dom_height'] = $dom_height;
+
+        $param = base64_encode(json_encode($data));
+
+        $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);
+
+        exec($str, $output);
+
+        return $output;
     }
 }
