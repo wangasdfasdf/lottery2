@@ -65,6 +65,11 @@ class AgentShopExpiryTimeLog extends BaseModel
         'other', //
     ];
 
+    protected $hidden = [
+        'deleted_at',
+        'other',
+    ];
+
     public function createTable($id): void
     {
         Db::statement(<<<AAA

@@ -5,6 +5,7 @@ use app\controller\shop\AdController;
 use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
 use app\controller\shop\AgentShopController;
+use app\controller\shop\AgentShopExpiryTimeLogController;
 use app\controller\shop\AuthController;
 use app\controller\shop\HistoryMatchController;
 use app\controller\shop\LotteryController;
@@ -55,6 +56,9 @@ Route::group("/shop/v1/", function () {
         //广告
         Route::get("ad", [AdController::class, 'index']);
         Route::get("ad/{id}", [AdController::class, 'show']);
+
+        //加时记录
+        Route::get("expiry-time-log", [AgentShopExpiryTimeLogController::class, 'index']);
 
     })->middleware([
         CheckShopLogin::class,

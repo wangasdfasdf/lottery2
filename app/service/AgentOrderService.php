@@ -264,7 +264,7 @@ class AgentOrderService extends BaseService
      * @param int $shop_id
      * @return string
      */
-    public function printInfo(int $order_id, $dom_height, int $shop_id): string
+    public function printInfo(int $order_id, $dom_height, int $shop_id, $is_redeem): string
     {
         /**
          * @var AgentOrder $order
@@ -277,6 +277,7 @@ class AgentOrderService extends BaseService
         $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($order->shop_id)->toArray();
         $data['printAds'] = $printAds ? json_decode($printAds) : [];
         $data['dom_height'] = $dom_height;
+        $data['is_redeem'] = $is_redeem;
 
         $param = base64_encode(json_encode($data));
 

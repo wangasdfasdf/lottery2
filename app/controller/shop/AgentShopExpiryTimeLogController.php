@@ -1,12 +1,13 @@
 <?php
-namespace app\controller;
+namespace app\controller\shop;
 
+use app\controller\Controller;
 use app\model\filter\AgentShopExpiryTimeLogFilter;
 use app\service\AgentShopExpiryTimeLogService;
 use Exception;
+use support\exception\TipsException;
 use support\Request;
 use support\Response;
-use support\exception\TipsException;
 
 class AgentShopExpiryTimeLogController extends Controller
 {

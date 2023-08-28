@@ -110,8 +110,9 @@ class AgentOrderController extends Controller
         $order_id = $request->input('order_id');
         $dom_height = $request->input('dom_height');
         $shop_id = $request->input('shop_id');
+        $is_redeem = $request->input('is_redeem');
 
-        $result = AgentOrderService::instance()->printInfo($order_id, $dom_height, $shop_id);
+        $result = AgentOrderService::instance()->printInfo($order_id, $dom_height, $shop_id, $is_redeem);
 
         return Response::success($result);
     }

@@ -57,6 +57,11 @@ class AgentShopWalletPaymentLog extends BaseModel
          'deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
+    protected $hidden = [
+        'deleted_at',
+        'result',
+    ];
+
     /**
      * 可以被批量赋值的属性
      *

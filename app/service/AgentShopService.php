@@ -2,7 +2,9 @@
 
 namespace app\service;
 
+use app\enum\AgentShopExpiryTimeLogType;
 use app\enum\QueueKey;
+use app\model\Agent;
 use app\model\AgentConfig;
 use app\model\AgentShop;
 use support\exception\TipsException;
@@ -45,7 +47,7 @@ class AgentShopService extends BaseService
 
         $data = AgentConfig::query()->where('key', 'wallet_address')->value('value');
 
-        if (empty($data)){
+        if (empty($data)) {
             $this->throw('请联系管理员设置钱包地址');
         }
 
@@ -68,10 +70,36 @@ class AgentShopService extends BaseService
         $shop->wallet_address_img = $data[$walletAddress]['image'];
         $shop->save();
 
-        Redis::send(QueueKey::CANCEL_AGENT_SHOP_WALLET_ADDRESS->value, ['id' => $shop_id, 'table' => $shop->getTable()], 60*20);
+        Redis::send(QueueKey::CANCEL_AGENT_SHOP_WALLET_ADDRESS->value, ['id' => $shop_id, 'table' => $shop->getTable()], 60 * 20);
 
         return $shop;
 
+    }
+
+    public function expiryTime($agent_id, mixed $shop_id, mixed $days): void
+    {
+        /**
+         * @var AgentShop $shop
+         */
+        $shop = AgentShop::query()->findOrFail($shop_id);
+
+        /**
+         * @var Agent $agent
+         */
+        $agent = Agent::query()->find($agent_id);
+
+        if ($agent->account_days < $days) {
+            $this->throw('账户天数不足');
+        }
+
+        $start_time = $shop->expiry_time;
+
+        $shop->wallet_address = '';
+        $shop->wallet_address_img = '';
+        $shop->expiry_time = ($shop->expiry_time < now()) ? now()->addDays($days) : $shop->expiry_time->addDays($days);
+        $shop->save();
+
+        AgentShopExpiryTimeLogService::instance()->createOne($shop, $days, $start_time, AgentShopExpiryTimeLogType::AGENT_CHARGE, []);
     }
 
 }

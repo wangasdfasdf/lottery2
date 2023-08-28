@@ -7,6 +7,7 @@ use app\controller\agent\AgentController;
 use app\controller\agent\AgentFeedbackController;
 use app\controller\agent\AgentOrderController;
 use app\controller\agent\AgentShopController;
+use app\controller\agent\AgentShopWalletPaymentLogController;
 use app\controller\agent\AgentWalletPaymentLogController;
 use app\controller\agent\AuthController;
 use app\controller\agent\ConfigController;
@@ -58,6 +59,10 @@ Route::group("/agent/v1/", function () {
 
         //上传
         Route::post('upload', [UploadController::class, 'upload']);
+
+        //钱包记录
+        Route::get("shop/wallet-payment-log", [AgentShopWalletPaymentLogController::class, 'index']);
+
     })->middleware([
         CheckAgentLogin::class
     ]);

@@ -1,25 +1,26 @@
 <?php
-namespace app\controller;
+namespace app\controller\agent;
 
-use app\model\filter\AgentShopWalletPaymentLogFilter;
-use app\service\AgentShopWalletPaymentLogService;
+use app\controller\Controller;
+use app\model\filter\AgentShopExpiryTimeLogFilter;
+use app\service\AgentShopExpiryTimeLogService;
 use Exception;
+use support\exception\TipsException;
 use support\Request;
 use support\Response;
-use support\exception\TipsException;
 
-class AgentShopWalletPaymentLogController extends Controller
+class AgentShopExpiryTimeLogController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param AgentShopWalletPaymentLogFilter $filter
+     * @param AgentShopExpiryTimeLogFilter $filter
      * @return Response
      */
-    public function index(Request $request, AgentShopWalletPaymentLogFilter $filter): Response
+    public function index(Request $request, AgentShopExpiryTimeLogFilter $filter): Response
     {
-        $data = AgentShopWalletPaymentLogService::instance()->getResourceList($filter, $request, []);
+        $data = AgentShopExpiryTimeLogService::instance()->getResourceList($filter, $request, []);
 
         return Response::success($data);
     }
@@ -35,7 +36,7 @@ class AgentShopWalletPaymentLogController extends Controller
     public function store(Request $request): Response
     {
         $data = $request->all();
-        AgentShopWalletPaymentLogService::instance()->create($data);
+        AgentShopExpiryTimeLogService::instance()->create($data);
 
         return Response::success();
     }
@@ -48,7 +49,7 @@ class AgentShopWalletPaymentLogController extends Controller
      */
     public function show(int $id): Response
     {
-        $info = AgentShopWalletPaymentLogService::instance()->getById($id);
+        $info = AgentShopExpiryTimeLogService::instance()->getById($id);
 
         return Response::success($info);
     }
@@ -64,7 +65,7 @@ class AgentShopWalletPaymentLogController extends Controller
     public function update(Request $request, int $id): Response
     {
         $data = $request->all();
-        AgentShopWalletPaymentLogService::instance()->updateById($id, $data);
+        AgentShopExpiryTimeLogService::instance()->updateById($id, $data);
 
         return Response::success();
     }
@@ -78,7 +79,7 @@ class AgentShopWalletPaymentLogController extends Controller
      */
     public function destroy(int $id): Response
     {
-        AgentShopWalletPaymentLogService::instance()->deleteById($id);
+        AgentShopExpiryTimeLogService::instance()->deleteById($id);
 
         return Response::success();
     }

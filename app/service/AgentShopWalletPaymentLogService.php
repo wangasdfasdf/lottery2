@@ -34,8 +34,8 @@ class AgentShopWalletPaymentLogService extends BaseService
 
         $agents = Agent::query()->get();
 
-        foreach ($agents as $shop) {
-            $this->setSuffix($shop->id);
+        foreach ($agents as $agent) {
+            $this->setSuffix($agent->id);
 
             $data = AgentConfig::query()->where('key', 'wallet_address')->value('value');
 
@@ -123,27 +123,32 @@ class AgentShopWalletPaymentLogService extends BaseService
                                     default => 0
                                 };
 
-                                $start_time = $shop->expiry_time;
+                                /**
+                                 * @var Agent $agent
+                                 */
+                                $agent = Agent::query()->find($agent->id);
 
-                                $shop->wallet_address = '';
-                                $shop->wallet_address_img = '';
-                                $shop->expiry_time = ($shop->expiry_time < now()) ? now()->addDays($days) : $shop->expiry_time->addDays($days);
-                                $shop->save();
+                                if ($agent->account_days > $days){
+                                    $start_time = $shop->expiry_time;
 
+                                    $shop->wallet_address = '';
+                                    $shop->wallet_address_img = '';
+                                    $shop->expiry_time = ($shop->expiry_time < now()) ? now()->addDays($days) : $shop->expiry_time->addDays($days);
+                                    $shop->save();
 
-                                AgentShopExpiryTimeLogService::instance()->createOne($shop, $days, $start_time, AgentShopExpiryTimeLogType::U_CHARGE, [
-                                    'shop_id' => $shopId,
-                                    'shop_name' => $shopName,
-                                    'amount' => $amount,
-                                    'transfer_time' => $transferTime,
-                                    'from_address' => $fromAddress,
-                                    'to_address' => $toAddress,
-                                    'days' => $days,
-                                    'transaction_id' => $transactionId,
-                                    'result' => $item,
-                                    'model' => 'agent_shop_wallet_payment_log',
-                                ]);
-
+                                    AgentShopExpiryTimeLogService::instance()->createOne($shop, $days, $start_time, AgentShopExpiryTimeLogType::U_CHARGE, [
+                                        'shop_id' => $shopId,
+                                        'shop_name' => $shopName,
+                                        'amount' => $amount,
+                                        'transfer_time' => $transferTime,
+                                        'from_address' => $fromAddress,
+                                        'to_address' => $toAddress,
+                                        'days' => $days,
+                                        'transaction_id' => $transactionId,
+                                        'result' => $item,
+                                        'model' => 'agent_shop_wallet_payment_log',
+                                    ]);
+                                }
                             }
 
                             AgentShopWalletPaymentLog::query()->create([

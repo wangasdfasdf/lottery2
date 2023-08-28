@@ -76,6 +76,8 @@ class AgentShopController extends Controller
     {
         $data = $request->all();
 
+        unset($data['expiry_time']);
+
         if (isset($data['password']) && $data['password']) {
             $data['password'] = passwordHash($data['password']);
         }
@@ -99,4 +101,14 @@ class AgentShopController extends Controller
         return Response::success();
     }
 
+    public function expiryTime(Request $request): Response
+    {
+        $shop_id = $request->input('shop_id');
+        $days = $request->input('days');
+        $agent_id = $request->input('agent_id');
+
+        AgentShopService::instance()->expiryTime($agent_id,$shop_id, $days);
+
+        return Response::success();
+    }
 }
