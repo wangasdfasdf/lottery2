@@ -118,6 +118,7 @@ class AgentShopWalletPaymentLogService extends BaseService
                                 $days = match (true) {
                                     abs(($shop->month_money ?? 0) - $tmp) < 5 => 30,
                                     abs(($shop->quarter_money ?? 0) - $tmp) < 5 => 90,
+                                    abs(($shop->half_year_money ?? 0) - $tmp) < 5 => 180,
                                     abs(($shop->year_money ?? 0) - $tmp) < 5 => 365,
                                     default => 0
                                 };

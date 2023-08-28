@@ -32,6 +32,7 @@ use support\Db;
  * @property int $is_open_online_pay
  * @property float $month_money
  * @property float $quarter_money
+ * @property float $half_year_money
  * @property float $year_money
  * @property string $wallet_address
  * @property string $wallet_address_img
@@ -105,6 +106,7 @@ class AgentShop extends BaseModel
         'updated_at', //
         'deleted_at', //
         'year_money', //
+        'half_year_money', //
     ];
 
     //往期篮球
@@ -183,6 +185,7 @@ CREATE TABLE `agent_shop_$id` (
   `is_open_online_pay` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '是否开通线上支付 -1:不开通 1:开通',
   `month_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '月付金额',
   `quarter_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '季付金额',
+  `half_year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
   `year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
   `wallet_address` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '钱包地址',
   `wallet_address_img` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '钱包图片',
