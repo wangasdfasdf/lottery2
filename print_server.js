@@ -460,11 +460,11 @@ function getRandomStr(lens) {
   })
   return res.join('')
 }
-const getCompetionHtml=(item)=>{
+const getCompetionHtml=(item,is_redeem)=>{
   const { resultHtml }= getMatchHtml(item)
   return `<h3><b>${item.pass_method}</b><b>${item.bet_multiplier}倍</b><b>合计 ${item.bet_amount}元</b></h3>${resultHtml}<p>(选项固定奖金额为每1元投注对应的奖金额)</p>
   <p>本票最高可能固定奖金:${fixMoney(item.highest_reward)}元</p>
-  <p>单倍注数:${item.bet_number}</p>`+(item.is_exchange?`<div class="exchange-box"><div class="exchange"><h5>已兑奖</h5><h6>${item.winning_status=='winning'?fixNum(item.wining_amount):'<i>0</i>元'}</h6></div></div>`:'')
+  <p>单倍注数:${item.bet_number}</p>`+(is_redeem?`<div class="exchange-box"><div class="exchange"><h5>已兑奖</h5><h6>${item.winning_status=='winning'?fixNum(item.wining_amount):'<i>0</i>元'}</h6></div></div>`:'')
 }
 // function generateRandomString(lens,letters,numbers,letterCount){
 //   let randomString = '';
@@ -909,7 +909,7 @@ function printExchange({ data }) {
       </report>`, null, {report,height,width:printWidth})
 }
 function urlAddRandomNo(str){
-  return str.replace('.','')
+  return str.replace('./grwebapp/','')
 }
 function renderGrfData(data, code, config){
   return str2base64(JSON.stringify({
@@ -930,9 +930,9 @@ const str2base64=(str)=>{
  * @param {String} userInfo 用户数据 {print_type,order_prefix,address,bottom_code}
  * @param {Array} printAds 用户配置的广告数据["体彩新春季 瑞兔呈祥送好彩","扫描右侧二维码查看活动详情"]
  */
-function renderData({params,userInfo,printAds,dom_height}){
-  const data=params.is_exchange?{exchange_money:params.winning_status=='winning'?fixNum(params.wining_amount):'0元'}:{}
-  if(params && params.only_exchange==1){
+function renderData({params,userInfo,printAds,dom_height,is_redeem}){
+  const data=is_redeem>0?{exchange_money:params.winning_status=='winning'?fixNum(params.wining_amount):'0元'}:{}
+  if(is_redeem=='2'){
     return printExchange({data})
   }
   let form = {}
