@@ -271,9 +271,11 @@ class AgentOrderService extends BaseService
          */
         $order = AgentOrder::query()->where('shop_id', $shop_id)->find($order_id);
 
+        $printAds = AgentConfig::query()->where('key', 'print_ads')->value('value');
+
         $data['params'] = $order->toArray();
         $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($order->shop_id)->toArray();
-        $data['printAds'] = AgentConfig::query()->where('key', 'print_ads')->value('value') ?json_decode(AgentConfig::query()->where('key', 'print_ads')->value('value')):[];
+        $data['printAds'] = $printAds ? json_decode($printAds) : [];
         $data['dom_height'] = $dom_height;
 
         $param = base64_encode(json_encode($data));
