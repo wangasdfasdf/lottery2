@@ -151,7 +151,8 @@ CREATE TABLE `agent_order_$agent_id` (
   `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   KEY `order_shop_id_index` (`shop_id`) USING BTREE,
-  KEY `order_order_no_index` (`order_no`) USING BTREE
+  KEY `order_order_no_index` (`order_no`) USING BTREE,
+  KEY `winning_status` (`winning_status`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci COMMENT='订单_$agent_id';
 AAA
         );

@@ -214,16 +214,7 @@ class AgentOrderService extends BaseService
         return \array_keys($content);
     }
 
-    /**
-     * 判断订单是否中奖
-     *
-     * @param AgentOrder $order
-     * @created_at 2022/12/3
-     */
-    public function runOrderIsWinning(AgentOrder $order)
-    {
 
-    }
 
     public function statistical(string $startTime, string $endTime, array $shopId): array
     {
@@ -285,5 +276,27 @@ class AgentOrderService extends BaseService
         exec($str, $output);
 
         return $output[0];
+    }
+
+    /**
+     * 计算是否中奖
+     *
+     * @return void
+     */
+    public function calculate()
+    {
+
+    }
+
+
+    /**
+     * 判断订单是否中奖
+     *
+     * @param AgentOrder $order
+     * @created_at 2022/12/3
+     */
+    public function runOrderIsWinning(AgentOrder $order)
+    {
+
     }
 }
