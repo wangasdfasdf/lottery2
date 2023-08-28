@@ -578,15 +578,15 @@ const printContent = (item,userInfo,printAds) => {
   return {
     title: "竞彩"+item.pass_type,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
-    number: item.print_order_no?item.print_order_no.split(",").join(" "):`${getRandomOrderNum(24,userInfo.order_prefix)} ${getRandomOrderNum(8)} ${getRandomStr(8)}`,
+    number: item.print_order_no?item.print_order_no.split(",").join(" "):`${getRandomOrderNum(24,userInfo?userInfo.order_prefix:'')} ${getRandomOrderNum(8)} ${getRandomStr(8)}`,
     content:"",
     content_arr:resultArr.concat(['(选项固定奖金额为每1元投注对应的奖金额)',`本票最高可能固定奖金:${fixMoney(item.highest_reward)}元`,
     `单倍注数:${item.bet_number}`]),
-    code:userInfo.bottom_code,//底部编号
-    printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
+    code:userInfo?userInfo.bottom_code:'',//底部编号
+    printType:userInfo?userInfo.print_type:2,//打印类型 1 广告版 2 地址版
     ads:printAds||[],
     tax:fixTax(item.bet_amount,0.21),
-    address:userInfo.address,//店铺地址
+    address:userInfo?userInfo.address:'',//店铺地址
     // isShort:item.pass_method.indexOf("单场固定")>-1&&item.bet_info.length<2 &&zsNum<=3 //是否是短票
   }
 }
@@ -867,10 +867,10 @@ function printBjdc ({ form, params, data }) {
   // printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
 }
 // 竞猜逻辑
-function printCompetion ({ form, params, data }) {
+function printCompetion ({ form, params, data, dom_height }) {
   let report = ''
   let height = 0
-  if (params.dom_height > 95) {
+  if (dom_height > 95) {
     report = urlAddRandomNo("./grwebapp/c_e.grf")
     height= 203.0
   } else {
@@ -930,7 +930,7 @@ const str2base64=(str)=>{
  * @param {String} userInfo 用户数据 {print_type,order_prefix,address,bottom_code}
  * @param {Array} printAds 用户配置的广告数据["体彩新春季 瑞兔呈祥送好彩","扫描右侧二维码查看活动详情"]
  */
-function renderData({params,userInfo,printAds}){
+function renderData({params,userInfo,printAds,dom_height}){
   const data=params.is_exchange?{exchange_money:params.winning_status=='winning'?fixNum(params.wining_amount):'0元'}:{}
   if(params && params.only_exchange==1){
     return printExchange({data})
@@ -945,7 +945,7 @@ function renderData({params,userInfo,printAds}){
   }
   if (params.type == 'pls') return printPls({ form, params, data })
   if (params.type == 'bjdc') return printBjdc({ form, params, data })
-  return printCompetion({ form, params, data })
+  return printCompetion({ form, params, data,dom_height })
 }
 const argReg=/^--args=/;
 const argvIndex=process.argv.findIndex(v=>argReg.test(v))

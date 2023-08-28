@@ -6,6 +6,8 @@ use app\model\AgentConfig;
 use app\model\AgentFeedback;
 use app\model\AgentOrder;
 use app\model\AgentShop;
+use app\model\AgentShopExpiryTimeLog;
+use app\model\AgentShopWalletPaymentLog;
 
 trait SetSuffix
 {
@@ -16,5 +18,7 @@ trait SetSuffix
         AgentOrder::setTableSuffix($agent_id);
         AgentConfig::setTableSuffix($agent_id);
         AgentFeedback::setTableSuffix($agent_id);
+        AgentShopExpiryTimeLog::setTableSuffix($agent_id);
+        AgentShopWalletPaymentLog::setTableSuffix($agent_id);
     }
 }
