@@ -32,6 +32,7 @@ use support\Db;
  * @property int $is_open_online_pay
  * @property float $month_money
  * @property float $quarter_money
+ * @property float $year_money
  * @property string $wallet_address
  * @property string $wallet_address_img
  * @property string $note
@@ -103,6 +104,7 @@ class AgentShop extends BaseModel
         'created_at', //
         'updated_at', //
         'deleted_at', //
+        'year_money', //
     ];
 
     //往期篮球

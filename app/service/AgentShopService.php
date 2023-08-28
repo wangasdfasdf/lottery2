@@ -68,7 +68,7 @@ class AgentShopService extends BaseService
         $shop->wallet_address_img = $data[$walletAddress]['image'];
         $shop->save();
 
-        Redis::send(QueueKey::CANCEL_AGENT_SHOP_WALLET_ADDRESS->value, ['id' => $shop_id, 'table' => $shop->getTable()], 60);
+        Redis::send(QueueKey::CANCEL_AGENT_SHOP_WALLET_ADDRESS->value, ['id' => $shop_id, 'table' => $shop->getTable()], 60*20);
 
         return $shop;
 

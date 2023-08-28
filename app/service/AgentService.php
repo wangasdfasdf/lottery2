@@ -62,7 +62,7 @@ class AgentService extends BaseService
         $agent->wallet_address_img = $data[$walletAddress]['image'];
         $agent->save();
 
-        Redis::send(QueueKey::CANCEL_AGENT_WALLET_ADDRESS->value, ['id' => $agent_id], 60);
+        Redis::send(QueueKey::CANCEL_AGENT_WALLET_ADDRESS->value, ['id' => $agent_id], 60*20);
 
         return $agent;
     }

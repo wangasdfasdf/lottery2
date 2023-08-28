@@ -6,6 +6,7 @@ use app\middleware\traits\SetSuffix;
 use app\model\AgentShop;
 use app\service\AgentOrderService;
 use app\service\AgentService;
+use app\service\AgentShopWalletPaymentLogService;
 use app\service\AgentWalletPaymentLogService;
 use app\service\LotteryBdResultService;
 use app\service\LotteryBdSfResultService;
@@ -42,10 +43,9 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setSuffix(2);
-        $result = AgentOrderService::instance()->printInfo(1, 100, 1);
+        AgentShopWalletPaymentLogService::instance()->capture();
 
-        dd($result);
+        dd(1);
 
         return self::SUCCESS;
     }

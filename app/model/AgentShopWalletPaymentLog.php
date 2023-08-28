@@ -86,7 +86,7 @@ CREATE TABLE `agent_shop_wallet_payment_log_$id` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `shop_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `shop_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '店铺名称',
-  `amount` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '转账金额',
+  `amount` decimal(65,0) unsigned NOT NULL DEFAULT '0' COMMENT '转账金额',
   `transfer_time` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '转账时间',
   `from_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '转账账户',
   `to_address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '收款账户',

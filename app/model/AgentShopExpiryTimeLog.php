@@ -76,6 +76,9 @@ CREATE TABLE `agent_shop_expiry_time_log_$id` (
   `end_expiry_time` datetime DEFAULT NULL COMMENT '结束的到期时间',
   `type` varchar(255) COLLATE utf8mb4_german2_ci DEFAULT NULL COMMENT '类型',
   `other` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `shop_id` (`shop_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_german2_ci COMMENT='店铺到期记录_$id';

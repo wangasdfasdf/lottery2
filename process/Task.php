@@ -2,6 +2,7 @@
 
 namespace process;
 
+use app\service\AgentShopWalletPaymentLogService;
 use app\service\AgentWalletPaymentLogService;
 use app\service\LotteryBdResultService;
 use app\service\LotteryBdSfResultService;
@@ -44,6 +45,11 @@ class Task
         new Crontab("0 30 * * * *", function () {
             //获取取消比赛的数据
             LotteryJcService::instance()->syncCancelLottery();
+        });
+
+        new Crontab("0 * * * * *", function () {
+            //获取取消比赛的数据
+            AgentShopWalletPaymentLogService::instance()->capture();
         });
     }
 }
