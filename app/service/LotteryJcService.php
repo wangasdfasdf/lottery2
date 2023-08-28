@@ -5,6 +5,7 @@ namespace app\service;
 use app\model\LotteryJcResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
 use function DI\string;
@@ -74,6 +75,50 @@ class LotteryJcService extends BaseService
             file_put_contents($path . $filename, (string)$result->getBody());
         } else {
             $this->putFile($url, $param, $name, $client);
+        }
+    }
+
+    public function syncCancelLottery(): void
+    {
+        $url = "https://webapi.sporttery.cn/gateway/jc/football/getMatchResultV1.qry";
+
+        $client = new Client();
+
+        $result = $client->get($url, ['query' => [
+            'matchPage' => 1,
+            'matchBeginDate' => now()->subDays(2)->format("Y-m-d"),
+            'matchEndDate' => now()->format("Y-m-d"),
+            'leagueId' => '',
+            'pageSize' => 30,
+            'pageNo' => 1,
+            'isFix' => 0,
+            'pcOrWap' => 1,
+        ]]);
+
+        if ($result->getStatusCode() != 200) {
+            return;
+        }
+
+        $data = json_decode((string)$result->getBody(), true);
+
+        $matchResult = Arr::get($data, 'value.matchResult', []);
+        foreach ($matchResult as $item) {
+            LotteryJcResult::query()->create([
+                'match_id' => $item['matchId'],
+                'type' => 'jczq',
+                'comp' => '',
+                'home' => $item['allHomeTeam'],
+                'away' => $item['allAwayTeam'],
+                'short_comp' => '',
+                'short_home' => '',
+                'short_away' => '',
+                'issue_num' => $item['matchNum'],
+                'match_time' => 0,
+                'home_score' => 0,
+                'away_score' => 0,
+                'half_home_score' => 0,
+                'half_away_score' => 0,
+            ]);
         }
     }
 }

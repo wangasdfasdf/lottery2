@@ -40,5 +40,10 @@ class Task
             //获取竞彩历史数据
             LotteryJcService::instance()->history();
         });
+
+        new Crontab("0 30 * * * *", function () {
+            //获取取消比赛的数据
+            LotteryJcService::instance()->syncCancelLottery();
+        });
     }
 }

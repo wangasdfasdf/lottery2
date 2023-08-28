@@ -38,7 +38,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        LotteryJcService::instance()->history();
+
 
         return self::SUCCESS;
     }
