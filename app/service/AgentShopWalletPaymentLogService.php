@@ -153,7 +153,7 @@ class AgentShopWalletPaymentLogService extends BaseService
                                 'transfer_time' => $transferTime,
                                 'from_address' => $fromAddress,
                                 'to_address' => $toAddress,
-                                'days' => $days,
+                                'type' => $days,
                                 'transaction_id' => $transactionId,
                                 'result' => $item,
                             ]);
