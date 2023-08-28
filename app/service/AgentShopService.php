@@ -2,6 +2,7 @@
 
 namespace app\service;
 
+use app\enum\AgentAccountDaysLogType;
 use app\enum\AgentShopExpiryTimeLogType;
 use app\enum\QueueKey;
 use app\model\Agent;
@@ -100,6 +101,11 @@ class AgentShopService extends BaseService
         $shop->save();
 
         AgentShopExpiryTimeLogService::instance()->createOne($shop, $days, $start_time, AgentShopExpiryTimeLogType::AGENT_CHARGE, []);
+
+        $agent->account_days -= $days;
+        $agent->save();
+
+        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::SHOP_REDUCE, []);
     }
 
 }

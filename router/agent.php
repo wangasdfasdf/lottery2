@@ -34,6 +34,7 @@ Route::group("/agent/v1/", function () {
         Route::get('shop/{id:\d+}', [AgentShopController::class, 'show']);
         Route::put('shop/{id}', [AgentShopController::class, 'update']);
         Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
+        Route::post('shop/expiry-time', [AgentShopController::class, 'expiryTime']);
 
         Route::get('order', [AgentOrderController::class, 'index']);
         Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
