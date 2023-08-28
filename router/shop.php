@@ -1,6 +1,7 @@
 <?php
 
 
+use app\controller\shop\AdController;
 use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
 use app\controller\shop\AgentShopController;
@@ -48,6 +49,10 @@ Route::group("/shop/v1/", function () {
         //历史数据
         Route::get('history/match/{path}', [HistoryMatchController::class, 'show']);
         Route::get('history/day', [HistoryMatchController::class, 'day']);
+
+        //广告
+        Route::get("ad", [AdController::class, 'index']);
+        Route::get("ad/{id}", [AdController::class, 'show']);
 
     })->middleware([
         CheckShopLogin::class,

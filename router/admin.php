@@ -1,6 +1,7 @@
 <?php
 
 
+use app\controller\admin\AdController;
 use app\controller\admin\AdminUserController;
 use app\controller\admin\AgentController;
 use app\controller\admin\AgentOrderController;
@@ -56,6 +57,14 @@ Route::group("/admin/v1/", function () {
 //        Route::post('shop', [AgentShopController::class, 'store']);
 //        Route::put('shop/{id}', [AgentShopController::class, 'update']);
 //        Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
+
+
+        //广告
+        Route::post("ad", [AdController::class, 'store']);
+        Route::get("ad", [AdController::class, 'index']);
+        Route::put("ad/{id}", [AdController::class, 'update']);
+        Route::get("ad/{id}", [AdController::class, 'show']);
+        Route::delete("ad/{id}", [AdController::class, 'destroy']);
 
         //版本设置
         Route::post('version', [VersionController::class, 'store']);
