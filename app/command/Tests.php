@@ -3,6 +3,7 @@
 namespace app\command;
 
 use app\middleware\traits\SetSuffix;
+use app\model\AgentOrder;
 use app\model\AgentShop;
 use app\service\AgentOrderService;
 use app\service\AgentService;
@@ -43,7 +44,8 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        AgentShopWalletPaymentLogService::instance()->capture();
+
+        AgentOrderService::instance()->calculate();
 
         dd(1);
 

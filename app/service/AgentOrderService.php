@@ -4,9 +4,13 @@ namespace app\service;
 
 
 use app\enum\OrderWinningStatus;
+use app\middleware\traits\SetSuffix;
+use app\model\Agent;
 use app\model\AgentConfig;
 use app\model\AgentOrder;
 use app\model\AgentShop;
+use app\model\LotteryJcResult;
+use App\Models\MatchResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -14,6 +18,8 @@ use Illuminate\Support\Arr;
 
 class AgentOrderService extends BaseService
 {
+    use SetSuffix;
+
     public $model = 'app\model\AgentOrder';
 
     public function getById(int $id, $columns = ['*'], int $shopId = 0)
@@ -215,7 +221,6 @@ class AgentOrderService extends BaseService
     }
 
 
-
     public function statistical(string $startTime, string $endTime, array $shopId): array
     {
         $shopId = array_filter($shopId);
@@ -283,9 +288,18 @@ class AgentOrderService extends BaseService
      *
      * @return void
      */
-    public function calculate()
+    public function calculate(): void
     {
+        $agent_ids = Agent::query()->pluck('id');
+        foreach ($agent_ids as $agent_id) {
+            $this->setSuffix($agent_id);
 
+            AgentOrder::query()->where('winning_status', OrderWinningStatus::UNDRAWN)->chunkById(100, function ($orders) {
+                foreach ($orders as $order) {
+                    $this->runOrderIsWinning($order);;
+                }
+            });
+        }
     }
 
 
@@ -297,6 +311,39 @@ class AgentOrderService extends BaseService
      */
     public function runOrderIsWinning(AgentOrder $order)
     {
+        $method = 'calculate' . ucwords($order->type);
 
+        if (!method_exists($this, $method)) {
+            return;
+        }
+
+        $this->$method($order);
+    }
+
+    public function calculateBjdc(AgentOrder $order)
+    {
+        dd(__METHOD__);
+    }
+
+    public function calculateFootball(AgentOrder $order)
+    {
+        $detail   = $order->detail;
+        $matchIds = Arr::get($detail, 'match_ids', []);
+
+        //押注详情
+        $content = Arr::get($detail, 'detail', []);
+
+        //中奖结果
+        $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $order->type)->get();
+    }
+
+    public function calculatePls(AgentOrder $order)
+    {
+        dd(__METHOD__);
+    }
+
+    public function calculateBasketball(AgentOrder $order)
+    {
+        dd(__METHOD__);
     }
 }

@@ -103,22 +103,25 @@ class LotteryJcService extends BaseService
 
         $matchResult = Arr::get($data, 'value.matchResult', []);
         foreach ($matchResult as $item) {
-            LotteryJcResult::query()->create([
-                'match_id' => $item['matchId'],
-                'type' => 'jczq',
-                'comp' => '',
-                'home' => $item['allHomeTeam'],
-                'away' => $item['allAwayTeam'],
-                'short_comp' => '',
-                'short_home' => '',
-                'short_away' => '',
-                'issue_num' => $item['matchNum'],
-                'match_time' => 0,
-                'home_score' => 0,
-                'away_score' => 0,
-                'half_home_score' => 0,
-                'half_away_score' => 0,
-            ]);
+
+            if (empty($item['poolStatus'])){
+                LotteryJcResult::query()->create([
+                    'match_id' => $item['matchId'],
+                    'type' => 'jczq',
+                    'comp' => '',
+                    'home' => $item['allHomeTeam'],
+                    'away' => $item['allAwayTeam'],
+                    'short_comp' => '',
+                    'short_home' => '',
+                    'short_away' => '',
+                    'issue_num' => $item['matchNum'],
+                    'match_time' => 0,
+                    'home_score' => 0,
+                    'away_score' => 0,
+                    'half_home_score' => 0,
+                    'half_away_score' => 0,
+                ]);
+            }
         }
     }
 }
