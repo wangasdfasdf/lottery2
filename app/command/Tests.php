@@ -45,7 +45,7 @@ class Tests extends Command
         $this->setSuffix(2);
         $result = AgentOrderService::instance()->printInfo(1, 100, 1);
 
-
+        dd($result);
 
         return self::SUCCESS;
     }
