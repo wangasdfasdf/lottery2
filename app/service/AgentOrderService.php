@@ -271,8 +271,6 @@ class AgentOrderService extends BaseService
         $param = base64_encode(json_encode($data));
 
         $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);
-
-        dd($str);
         exec($str, $output);
 
         return $output;
