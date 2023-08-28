@@ -1,4 +1,5 @@
 <?php
+
 namespace app\controller\shop;
 
 use app\controller\Controller;
@@ -94,13 +95,24 @@ class AgentOrderController extends Controller
 
     public function statistical(Request $request)
     {
-        $shopId    = $request->input('shop_id');
+        $shopId = $request->input('shop_id');
         $startTime = $request->input('start_time');
-        $endTime   = $request->input('end_time');
+        $endTime = $request->input('end_time');
 
         $startTime = date('Y-m-d', \strtotime(\date('Y-m-d', \time() - 86400))) . ' 00:00:00';
-        $endTime   = date('Y-m-d', \strtotime(\date('Y-m-d', \time() - 86400))) . ' 23:59:59';
-        $data      = AgentOrderService::instance()->statistical($startTime, $endTime, [$shopId]);
+        $endTime = date('Y-m-d', \strtotime(\date('Y-m-d', \time() - 86400))) . ' 23:59:59';
+        $data = AgentOrderService::instance()->statistical($startTime, $endTime, [$shopId]);
         return Response::success($data);
+    }
+
+    public function printInfo(Request $request): Response
+    {
+        $order_id = $request->input('order_id');
+        $dom_height = $request->input('dom_height');
+        $shop_id = $request->input('shop_id');
+
+        $result = AgentOrderService::instance()->printInfo($order_id, $dom_height, $shop_id);
+
+        return Response::success($result);
     }
 }

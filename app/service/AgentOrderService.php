@@ -256,15 +256,23 @@ class AgentOrderService extends BaseService
         ];
     }
 
-    public function printInfo(int $order_id, $dom_height, int $shop_id): array
+    /**
+     * 获取打印订单内容
+     *
+     * @param int $order_id
+     * @param $dom_height
+     * @param int $shop_id
+     * @return string
+     */
+    public function printInfo(int $order_id, $dom_height, int $shop_id): string
     {
         /**
          * @var AgentOrder $order
          */
-        $order = AgentOrder::query()->find($order_id);
+        $order = AgentOrder::query()->where('shop_id', $shop_id)->find($order_id);
 
         $data['params'] = $order->toArray();
-        $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($shop_id)->toArray();
+        $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($order->shop_id)->toArray();
         $data['printAds'] = json_decode(AgentConfig::query()->where('key', 'print_ads')->value('value'));
         $data['dom_height'] = $dom_height;
 
@@ -273,6 +281,6 @@ class AgentOrderService extends BaseService
         $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);
         exec($str, $output);
 
-        return $output;
+        return $output[0];
     }
 }
