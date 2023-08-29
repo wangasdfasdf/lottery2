@@ -105,9 +105,10 @@ class LotteryJcService extends BaseService
         foreach ($matchResult as $item) {
 
             if (empty($item['poolStatus'])){
-                LotteryJcResult::query()->create([
-                    'match_id' => $item['matchId'],
+                LotteryJcResult::query()->firstOrCreate([
+                    'match_id' => $item['match_id'],
                     'type' => 'jczq',
+                ],[
                     'comp' => '',
                     'home' => $item['allHomeTeam'],
                     'away' => $item['allAwayTeam'],

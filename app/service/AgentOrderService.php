@@ -81,7 +81,7 @@ class AgentOrderService extends BaseService
 
             $order = parent::create($data);
             $order_ids[] = $order->id;
-            $this->runOrderIsWinning($order);
+//            $this->runOrderIsWinning($order);
 
             $data['detail'] = $tmp;
         }
@@ -312,7 +312,7 @@ class AgentOrderService extends BaseService
      * @param AgentOrder $order
      * @created_at 2022/12/3
      */
-    public function runOrderIsWinning(AgentOrder $order)
+    public function runOrderIsWinning(AgentOrder $order): void
     {
         $method = 'calculate' . ucwords($order->type);
 
@@ -323,7 +323,13 @@ class AgentOrderService extends BaseService
         $this->$method($order);
     }
 
-    public function calculateBjdc(AgentOrder $order)
+    /**
+     * 北京单场
+     *
+     * @param AgentOrder $order
+     * @return void
+     */
+    public function calculateBjdc(AgentOrder $order): void
     {
         $detail = $order->detail;
 
@@ -339,32 +345,24 @@ class AgentOrderService extends BaseService
             default => $passType,
         };
 
-        $type = match ($passType) {
-            'spf' => '200',  //北单胜平负
-            'dcbf' => '250', //北单单场比分
-            'zjq' => '230',  //北单总进球数
-            'bqc' => '240',  //北单半场胜平负
-            'sxp' => '210',  //北单上下盘单双数
-            'sf' => '270',   //北单胜负过关
-        };
-
         $winingAmount = 0;
 
         $lotteryResult = LotteryBdResult::query()->where('issue', $awardPeriod)
             ->whereIn('issue_num', $matchno)
             ->get();
 
+
         if ($passType == 'sf') {
             $lotteryResult = LotteryBdSfResult::query()->where('issue', $awardPeriod)
-                ->select('issue_num')->whereIn('issue_num', $matchno)
+                ->whereIn('issue_num', $matchno)
                 ->get();
-
         }
 
 
-        if (\count($matchno) != \count($lotteryResult)) {
+        if (\count($matchno) != count($lotteryResult)) {
             return;
         }
+
 
         foreach ($content as $item) {
             $temAmount = 1;
@@ -372,31 +370,19 @@ class AgentOrderService extends BaseService
             foreach ($item as $value) {
 
                 $resultItem = $lotteryResult->firstWhere('issue_num', $value['match_no']);
-                $odds = $resultItem->value('odds');
 
-                $itemResult = $value['result'];
+                $odds = $resultItem->odds;
 
-                $this->checkBdResult($column, $value['result'], $odds[$column]);
-
-
-                if ($type == 200) {
-                    $itemResult = match ($itemResult) {
-                        '胜' => 3,
-                        '平' => 1,
-                        '负' => 0,
-                    };
+                if (empty($odds)) {
+                    dd($order->id);
                 }
-                $n = 0;
-                if ($resultItem->result == $itemResult) {
-                    $temAmount *= $resultItem['sp_value'];
-                } elseif ($resultItem->result == '*') {
-                    $n = '1';
-                    $temAmount *= 1;
-                } else {
-                    $temAmount *= 0;
-                }
+
+                list($result, $ps) = $this->checkBdResult($column, $value['result'], $odds[$column]);
+
+                $temAmount *= $ps;
             }
-            if (count($item) == 1 && isset($n) && $n == 1) {
+
+            if ($temAmount == 1) {
                 $tmpAmount = 2;
             } else {
                 $tmpAmount = \floor($temAmount * 0.65 * 2 * 100) / 100;
@@ -408,17 +394,15 @@ class AgentOrderService extends BaseService
 
             $tmpAmount = $order->bet_multiplier * $tmpAmount;
 
-            $winingAmount += $tmpAmount;
 
+            $winingAmount += $tmpAmount;
         }
 
         $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
 
         $order->wining_amount = abs($winingAmount);
 
-
         $order->save();
-
     }
 
 
@@ -431,9 +415,56 @@ class AgentOrderService extends BaseService
         $content = Arr::get($detail, 'detail', []);
 
         //中奖结果
-        $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $order->type)->get();
+        $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', 'jczq')->get();
 
-        dd($result, $matchIds);
+        if ($result->count() != count($matchIds)) {
+            return;
+        }
+
+        foreach ($content as $item) {
+            //这组中奖结果
+            $arr = [];
+            $odds = 1;
+            foreach ($item as $item1) {
+                $singleResult = $result->firstWhere('match_id', $item1['matchId']);
+
+                $column = match ($item1['code']) {
+                    'HHAD' => 'rq',
+                    'HAFU' => 'bqc',
+                    'CRS' => 'bf',
+                    'TTG' => 'jq',
+                    'HAD' => 'spf',
+                };
+
+                dd($item1);
+                if ($result->where('match_id', $item1['matchId'])->value('pool_status') == 'refund') {
+                    $arr[] = true;
+                } else {
+                    $goalLine = trim($item1['goalLine'], '+');
+                    $model = $result->where('match_id', $item1['matchId'])->where('goal_line', $goalLine)->where('code', $item1['code'])->first();
+                    if (empty($model)) {
+                        continue;
+                    }
+
+                    $arr[] = $model->combination == $item1['combination'];
+                    $odds *= $item1['odds'];
+                }
+            }
+
+            // 如果有一场每种奖  直接跳过
+            if (in_array(false, $arr)) {
+                continue;
+            }
+
+
+            $totalAmount += $this->getNub(2 * $odds) * $order->bet_multiplier;
+
+
+        }
+
+        $order->winning_status = empty($totalAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
+        $order->wining_amount = $totalAmount;
+        $order->save();
     }
 
     public function calculatePls(AgentOrder $order)
@@ -458,16 +489,57 @@ class AgentOrderService extends BaseService
                 '平' => 1,
                 '负' => 0,
             };
-
-            if ($result['rb2'] == $bet) {
-                return [true, $result['sp']];
-            }
-            return [false, 0];
+            return match (true) {
+                $bet == $result['rb2'] => [true, $result['sp']],
+                default => [false, 0],
+            };
         }
 
         if ($type == 'bf') {
+            return match (true) {
+                $bet == format_result_bf($result['rb1']) => [true, $result['sp']],
+                default => [false, 0],
+            };
+        }
 
-            var_dump($bet, $result);
+        if ($type == 'jq') {
+            return match (true) {
+                $bet == $result['rb1'] => [true, $result['sp']],
+                default => [false, 0],
+            };
+        }
+
+        if ($type == 'bqc') {
+            return match (true) {
+                $bet == ($result['rb1'] . '-' . $result['rb2']) => [true, $result['sp']],
+                default => [false, 0],
+            };
+        }
+
+        if ($type == 'sxp') {
+            $rb1 = match ($result['rb1']) {
+                '4' => '上',
+                '5' => '下',
+            };
+            $rb2 = match ($result['rb2']) {
+                '6' => '单',
+                '7' => '双',
+            };
+            return match (true) {
+                $bet == $rb1 . $rb2 => [true, $result['sp']],
+                default => [false, 0],
+            };
+        }
+
+        if ($type == 'sf') {
+            $bet = match ($bet) {
+                '胜' => 3,
+                '负' => 0,
+            };
+            return match (true) {
+                $bet == $result['rb2'] => [true, $result['sp']],
+                default => [false, 0],
+            };
         }
     }
 

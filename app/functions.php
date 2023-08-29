@@ -57,7 +57,7 @@ if (!function_exists('now')) {
     }
 }
 
-if (!function_exists('getRandomOrderNum')){
+if (!function_exists('getRandomOrderNum')) {
     function getRandomOrderNum($end, $prefix = ''): string
     {
         $full = (string)(rand(0, 9999999999999999)) . (string)(rand(0, 9999999999999999));
@@ -65,7 +65,7 @@ if (!function_exists('getRandomOrderNum')){
     }
 }
 
-if(!function_exists('generateRandomString')){
+if (!function_exists('generateRandomString')) {
     function generateRandomString($lens, $letters, $numbers, $letterCount): string
     {
         $randomString = '';
@@ -89,7 +89,7 @@ if(!function_exists('generateRandomString')){
     }
 }
 
-if (!function_exists('getRandomSuffix_jc')){
+if (!function_exists('getRandomSuffix_jc')) {
     function getRandomSuffix_jc(): string
     {
         $lens = 8;
@@ -101,7 +101,7 @@ if (!function_exists('getRandomSuffix_jc')){
 
 }
 
-if (!function_exists('getRandomSuffix_bd')){
+if (!function_exists('getRandomSuffix_bd')) {
     function getRandomSuffix_bd(): string
     {
         $lens = 13;
@@ -114,7 +114,7 @@ if (!function_exists('getRandomSuffix_bd')){
     }
 }
 
-if (!function_exists('getRandomSuffix_pls')){
+if (!function_exists('getRandomSuffix_pls')) {
     function getRandomSuffix_pls(): string
     {
         $lens = 6;
@@ -142,7 +142,7 @@ if (!function_exists('getRandomSuffix_pls')){
 }
 
 
-if (!function_exists('get_order_num')){
+if (!function_exists('get_order_num')) {
     function get_order_num($match_type, $order_prefix = ''): string
     {
         // 顶部订单编号生成
@@ -157,5 +157,23 @@ if (!function_exists('get_order_num')){
             return getRandomOrderNum(24, $order_prefix) . ',' . getRandomOrderNum(8) . ',' . getRandomSuffix_jc();
         }
     }
+}
 
+if (!function_exists('format_result_bf')) {
+    function format_result_bf(string $r): string
+    {
+        $arr = ['1:0', '2:0', '2:1', '3:0', '3:1', '3:2', '4:0', '4:1', '4:2', '5:0', '5:1', '5:2', '0:0', '1:1', '2:2', '3:3', '0:1', '0:2', '1:2', '0:3', '1:3', '2:3', '0:4', '1:4', '2:4', '0:5', '1:5', '2:5',];
+
+        if (in_array($r, $arr)) {
+            return $r;
+        }
+
+        list($i, $j) = explode(':', $r);
+
+        return match (true) {
+            $i < $j => '负其他',
+            $i == $j => '平其他',
+            $i > $j => '胜其他',
+        };
+    }
 }
