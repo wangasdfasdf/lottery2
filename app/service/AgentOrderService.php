@@ -12,6 +12,7 @@ use app\model\AgentShop;
 use app\model\LotteryBdResult;
 use app\model\LotteryBdSfResult;
 use app\model\LotteryJcResult;
+use app\model\LotteryPlsResult;
 use App\Models\MatchResult;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -373,10 +374,6 @@ class AgentOrderService extends BaseService
 
                 $odds = $resultItem->odds;
 
-                if (empty($odds)) {
-                    dd($order->id);
-                }
-
                 list($result, $ps) = $this->checkBdResult($column, $value['result'], $odds[$column]);
 
                 $temAmount *= $ps;
@@ -414,52 +411,38 @@ class AgentOrderService extends BaseService
         //押注详情
         $content = Arr::get($detail, 'detail', []);
 
+        $type = match ($order->type) {
+            'football' => 'jczq',
+            'basketball' => 'jclq',
+        };
+
         //中奖结果
-        $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', 'jczq')->get();
+        $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $type)->get();
+
+
+
 
         if ($result->count() != count($matchIds)) {
             return;
         }
 
+        $totalAmount = 0;
         foreach ($content as $item) {
             //这组中奖结果
-            $arr = [];
             $odds = 1;
             foreach ($item as $item1) {
                 $singleResult = $result->firstWhere('match_id', $item1['matchId']);
 
-                $column = match ($item1['code']) {
-                    'HHAD' => 'rq',
-                    'HAFU' => 'bqc',
-                    'CRS' => 'bf',
-                    'TTG' => 'jq',
-                    'HAD' => 'spf',
-                };
+                list($r, $ps) = $this->checkJczqResult($singleResult, $item1);
 
-                dd($item1);
-                if ($result->where('match_id', $item1['matchId'])->value('pool_status') == 'refund') {
-                    $arr[] = true;
-                } else {
-                    $goalLine = trim($item1['goalLine'], '+');
-                    $model = $result->where('match_id', $item1['matchId'])->where('goal_line', $goalLine)->where('code', $item1['code'])->first();
-                    if (empty($model)) {
-                        continue;
-                    }
+//                if ($order->id == 3975658){
+//                    dd($ps);
+//                }
 
-                    $arr[] = $model->combination == $item1['combination'];
-                    $odds *= $item1['odds'];
-                }
+                $odds *= $ps;
             }
 
-            // 如果有一场每种奖  直接跳过
-            if (in_array(false, $arr)) {
-                continue;
-            }
-
-
-            $totalAmount += $this->getNub(2 * $odds) * $order->bet_multiplier;
-
-
+            $totalAmount += format_jc_amount(2 * $odds) * $order->bet_multiplier;
         }
 
         $order->winning_status = empty($totalAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
@@ -469,12 +452,115 @@ class AgentOrderService extends BaseService
 
     public function calculatePls(AgentOrder $order)
     {
-        dd(__METHOD__);
+        $detail = $order->detail;
+        $drawnNu = Arr::get($detail, 'drawn_um');
+        $type = Arr::get($detail, 'type');     // 1.直选  2.组三 3.组六
+
+        $category = Arr::get($detail, 'category'); //  1标准选号  2.和值投注 3.跨度投注 4.组合复式 5.组合胆拖 6:号码直选
+        $content = Arr::get($detail, 'content');
+
+        /**
+         * @var LotteryPlsResult $result
+         */
+        $result = LotteryPlsResult::query()->where('issue', $drawnNu)->first();
+
+        if (empty($result)) {
+            return;
+        }
+
+        $drawResult = $result->draw_result;
+        $drawResultArr = \explode(' ', $drawResult);
+
+        //中奖的是组三还是组六
+        $resultType = \count($drawResultArr) == \count(\array_unique($drawResultArr)) ? 3 : 2;
+        $value = 'stake_amount_' . $resultType;
+
+        $winingAmount = 0;
+        if ($type == 1 && $category == 1) {
+            if (\in_array($drawResultArr[0], $content['first']) && \in_array($drawResultArr[1], $content['two']) && \in_array($drawResultArr[2], $content['three'])) {
+                $winingAmount = $result->amount1;
+            }
+        }
+
+        if (\in_array($type, [2, 3]) && $category == 1) {
+            if ($resultType == 3 && $type == 3 && empty(\array_diff($drawResultArr, $content['first']))) {
+                $winingAmount = $result->amount3;
+            }
+
+            if ($resultType == 2 && $type == 2 && empty(\array_diff(\array_unique($drawResultArr), $content['first']))) {
+                $winingAmount = $result->amount2;
+            }
+        }
+
+
+        if ($category == 2) {
+            if (in_array(\array_sum($drawResultArr), $content['first'])) {
+                $winingAmount = match ($type) {
+                    '1' => $result->amount1,
+                    default => $result->$value,
+                };
+            }
+        }
+
+        if ($category == 3) {
+            if (\in_array(\max($drawResultArr) - \min($drawResultArr), $content['first']) && ($type == 1 || $type == $resultType)) {
+                $winingAmount = match ($type) {
+                    '1' => $result->amount1,
+                    '2' => $result->amount2,
+                    '3' => $result->amount3,
+                };
+            }
+        }
+
+        if ($category == 4) {
+            if (empty(\array_diff($drawResultArr, $content['first'])) && $resultType == 3) {
+                $winingAmount = $result->amount1;
+            }
+        }
+
+        if ($category == 5 && ($type == 1 || $type == $resultType)) {
+            $diff = \array_diff(\array_unique($drawResultArr), $content['first']);
+            if (\count($diff) == (\count(\array_unique($drawResultArr)) - \count($content['first'])) && empty(\array_diff($diff, $content['two']))) {
+                $winingAmount = match ($type) {
+                    '1' => $result->amount1,
+                    '2' => $result->amount2,
+                    '3' => $result->amount3,
+                };
+            }
+        }
+
+        if ($category == 6) {
+            if ($type == 1) {
+                foreach ($content as $item) {
+                    if ($item == $drawResult) {
+                        $winingAmount += $result->amount1;
+                    }
+                }
+            } else {
+                \sort($drawResultArr);
+                foreach ($content as $item) {
+                    $tmp = \explode(' ', $item);
+                    \sort($tmp);
+
+                    if ($drawResultArr == $tmp) {
+                        $winingAmount += ($resultType == 3 ? $result->amount3 : $result->amount2);
+                    }
+                }
+            }
+
+        }
+
+
+        $winingAmount = $winingAmount * $order->bet_multiplier;
+
+        $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
+        $order->wining_amount = $winingAmount;
+        $order->save();
     }
 
     public function calculateBasketball(AgentOrder $order)
     {
-        dd(__METHOD__);
+        $this->calculateFootball($order);
     }
 
     private function checkBdResult(string $type, mixed $bet, array $result)
@@ -538,6 +624,126 @@ class AgentOrderService extends BaseService
             };
             return match (true) {
                 $bet == $result['rb2'] => [true, $result['sp']],
+                default => [false, 0],
+            };
+        }
+    }
+
+    private function checkJczqResult($singleResult, mixed $item)
+    {
+
+        $column = match ($item['code']) {
+            'HHAD' => 'rq',
+            'HAFU' => 'bqc',
+            'CRS' => 'bf',
+            'TTG' => 'jq',
+            'HAD' => 'spf',
+
+            "HILO" => 'dxf',
+            "HDC" => 'rf',
+            "MNL", => 'sf',
+            "WNM", => 'sfc',
+        };
+
+        $result = $singleResult->$column;
+
+        if (empty($result)) {
+            return [true, 1];
+        }
+
+        $combination = strtr($item['combination'], [
+            "A" => 0,
+            "D" => 1,
+            "H" => 3,
+        ]);
+
+        if ($column == 'rq') {
+            $arr = explode(',', $result);
+
+            return match (true) {
+                $combination == $arr[1] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'bqc') {
+            $arr = explode(',', $result);
+            return match (true) {
+                $combination == $arr[0] . ':' . $arr[1] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'spf') {
+            $arr = explode(',', $result);
+
+            return match (true) {
+                $combination == $arr[0] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'jq') {
+            $arr = explode(',', $result);
+
+            return match (true) {
+                $item['combination'] == $arr[0] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'bf') {
+            $arr = explode(',', $result);
+            $combination = match ($item['combination']) {
+                '-1:-H' => '胜其他',
+                '-1:-D' => '平其他',
+                '-1:-A' => '负其他',
+                default => $item['combination'],
+            };
+
+            return match (true) {
+                $combination == $arr[0] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'rf') {
+            $r = $singleResult->home_score + $item['goalLine'] > $singleResult->away_score ? 3 : 0;
+
+            return match (true) {
+                $combination == $r => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'dxf') {
+            $r = $singleResult->home_score + $singleResult->away_score > $item['goalLine'] ? "H" : "L";
+
+            return match (true) {
+                $item['combination'] == $r => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'sf'){
+            $arr = explode(',', $result);
+            return match (true) {
+                $combination == $arr[0] => [true, $item['odds']],
+                default => [false, 0],
+            };
+        }
+
+        if ($column == 'sfc'){
+
+            if ($item['combination'] < 0){
+                $combination = abs($item['combination']);
+            } else {
+                $combination = $item['combination'] + 6;
+            }
+            $arr = explode(',', $result);
+
+            return match (true) {
+                $combination == $arr[0] => [true, $item['odds']],
                 default => [false, 0],
             };
         }
