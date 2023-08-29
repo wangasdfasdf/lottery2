@@ -61,7 +61,7 @@ class AgentOrderService extends BaseService
             $data['print_order_no'] = $print_order_no;
             $data['print_time'] = $printTime;
 
-            $order_numbers[] = $print_order_no;
+//            $order_numbers[] = $print_order_no;
             if ($data['type'] == 'bjdc') {
                 $detail = $data['detail'];
                 $content = $detail['content'];
@@ -75,7 +75,7 @@ class AgentOrderService extends BaseService
             if (\in_array($data['type'], ['bjdc', 'pls'])) {
                 $serial_number = \str_pad(\mt_rand(1, 300), 5, '0', STR_PAD_LEFT);
                 $data['serial_number'] = $serial_number;
-                $serial_numbers[] = $serial_number;
+//                $serial_numbers[] = $serial_number;
 
             }
 
