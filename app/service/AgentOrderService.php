@@ -9,6 +9,8 @@ use app\model\Agent;
 use app\model\AgentConfig;
 use app\model\AgentOrder;
 use app\model\AgentShop;
+use app\model\LotteryBdResult;
+use app\model\LotteryBdSfResult;
 use app\model\LotteryJcResult;
 use App\Models\MatchResult;
 use Illuminate\Database\Eloquent\Builder;
@@ -42,7 +44,7 @@ class AgentOrderService extends BaseService
 
     public function frontCreateOrder(mixed $data, mixed $shopId): array
     {
-        $serial_numbers = $order_numbers = [];
+        $serial_numbers = $order_numbers = $order_ids = [];
         $data['create_time'] = now();
         /**
          * @var AgentShop $shop
@@ -78,12 +80,13 @@ class AgentOrderService extends BaseService
             }
 
             $order = parent::create($data);
+            $order_ids[] = $order->id;
             $this->runOrderIsWinning($order);
 
             $data['detail'] = $tmp;
         }
 
-        return \compact('serial_numbers', 'order_numbers');
+        return \compact('serial_numbers', 'order_numbers', 'order_ids');
     }
 
     /**
@@ -322,12 +325,106 @@ class AgentOrderService extends BaseService
 
     public function calculateBjdc(AgentOrder $order)
     {
-        dd(__METHOD__);
+        $detail = $order->detail;
+
+        $awardPeriod = Arr::get($detail, 'award_period', '');
+        $passType = Arr::get($detail, 'pass_type', '');
+        $matchno = Arr::get($detail, 'matchno', []);
+        $content = Arr::get($detail, 'content', []);
+
+
+        $column = match ($passType) {
+            "dcbf" => 'bf',
+            "zjq" => 'jq',
+            default => $passType,
+        };
+
+        $type = match ($passType) {
+            'spf' => '200',  //北单胜平负
+            'dcbf' => '250', //北单单场比分
+            'zjq' => '230',  //北单总进球数
+            'bqc' => '240',  //北单半场胜平负
+            'sxp' => '210',  //北单上下盘单双数
+            'sf' => '270',   //北单胜负过关
+        };
+
+        $winingAmount = 0;
+
+        $lotteryResult = LotteryBdResult::query()->where('issue', $awardPeriod)
+            ->whereIn('issue_num', $matchno)
+            ->get();
+
+        if ($passType == 'sf') {
+            $lotteryResult = LotteryBdSfResult::query()->where('issue', $awardPeriod)
+                ->select('issue_num')->whereIn('issue_num', $matchno)
+                ->get();
+
+        }
+
+
+        if (\count($matchno) != \count($lotteryResult)) {
+            return;
+        }
+
+        foreach ($content as $item) {
+            $temAmount = 1;
+
+            foreach ($item as $value) {
+
+                $resultItem = $lotteryResult->firstWhere('issue_num', $value['match_no']);
+                $odds = $resultItem->value('odds');
+
+                $itemResult = $value['result'];
+
+                $this->checkBdResult($column, $value['result'], $odds[$column]);
+
+
+                if ($type == 200) {
+                    $itemResult = match ($itemResult) {
+                        '胜' => 3,
+                        '平' => 1,
+                        '负' => 0,
+                    };
+                }
+                $n = 0;
+                if ($resultItem->result == $itemResult) {
+                    $temAmount *= $resultItem['sp_value'];
+                } elseif ($resultItem->result == '*') {
+                    $n = '1';
+                    $temAmount *= 1;
+                } else {
+                    $temAmount *= 0;
+                }
+            }
+            if (count($item) == 1 && isset($n) && $n == 1) {
+                $tmpAmount = 2;
+            } else {
+                $tmpAmount = \floor($temAmount * 0.65 * 2 * 100) / 100;
+            }
+
+            if ($tmpAmount > 10000) {
+                $tmpAmount = $tmpAmount * 0.8;
+            }
+
+            $tmpAmount = $order->bet_multiplier * $tmpAmount;
+
+            $winingAmount += $tmpAmount;
+
+        }
+
+        $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
+
+        $order->wining_amount = abs($winingAmount);
+
+
+        $order->save();
+
     }
+
 
     public function calculateFootball(AgentOrder $order)
     {
-        $detail   = $order->detail;
+        $detail = $order->detail;
         $matchIds = Arr::get($detail, 'match_ids', []);
 
         //押注详情
@@ -335,6 +432,8 @@ class AgentOrderService extends BaseService
 
         //中奖结果
         $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $order->type)->get();
+
+        dd($result, $matchIds);
     }
 
     public function calculatePls(AgentOrder $order)
@@ -346,4 +445,31 @@ class AgentOrderService extends BaseService
     {
         dd(__METHOD__);
     }
+
+    private function checkBdResult(string $type, mixed $bet, array $result)
+    {
+        if ($result['rb1'] == '*' || (isset($result['bf2']) && $result['rb2'] == '*')) {
+            return [true, 1];
+        }
+
+        if ($type == 'spf') {
+            $bet = match ($bet) {
+                '胜' => 3,
+                '平' => 1,
+                '负' => 0,
+            };
+
+            if ($result['rb2'] == $bet) {
+                return [true, $result['sp']];
+            }
+            return [false, 0];
+        }
+
+        if ($type == 'bf') {
+
+            var_dump($bet, $result);
+        }
+    }
+
+
 }

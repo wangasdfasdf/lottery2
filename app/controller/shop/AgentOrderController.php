@@ -40,9 +40,9 @@ class AgentOrderController extends Controller
         $shopId = $request->input('shop_id');
 
 
-        AgentOrderService::instance()->frontCreateOrder($data, $shopId);
+        $data = AgentOrderService::instance()->frontCreateOrder($data, $shopId);
 
-        return Response::success();
+        return Response::success($data);
     }
 
     /**
