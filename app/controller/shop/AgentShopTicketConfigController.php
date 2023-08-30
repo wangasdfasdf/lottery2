@@ -36,7 +36,7 @@ class AgentShopTicketConfigController extends Controller
     public function store(Request $request): Response
     {
         $data = $request->all();
-        AgentShopTicketConfigService::instance()->create($data);
+        AgentShopTicketConfigService::instance()->createOrUpdate($data);
 
         return Response::success();
     }
