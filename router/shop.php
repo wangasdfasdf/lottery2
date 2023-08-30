@@ -40,6 +40,7 @@ Route::group("/shop/v1/", function () {
         Route::get('order/statistical', [AgentOrderController::class, 'statistical']);
         Route::post('order/print-info', [AgentOrderController::class, 'printInfo']);
         Route::post('order/grf', [AgentOrderController::class, 'grf']);
+        Route::put('order/{id}/redeem', [AgentOrderController::class, 'redeem']);
         Route::put('order/{id}', [AgentOrderController::class, 'update']);
         Route::get('order', [AgentOrderController::class, 'index']);
         Route::get('order/{id}', [AgentOrderController::class, 'show']);

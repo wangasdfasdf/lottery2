@@ -137,4 +137,20 @@ class AgentOrderController extends Controller
 
         return Response::success($data);
     }
+
+    /**
+     * 兑奖
+     *
+     * @param Request $request
+     * @param $id
+     * @return Response
+     */
+    public function redeem(Request $request, $id): Response
+    {
+        $shop_id = $request->input('shop_id');
+
+        AgentOrderService::instance()->redeem($shop_id, $id);
+
+        return Response::success();
+    }
 }

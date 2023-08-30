@@ -420,8 +420,6 @@ class AgentOrderService extends BaseService
         $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $type)->get();
 
 
-
-
         if ($result->count() != count($matchIds)) {
             return;
         }
@@ -722,7 +720,7 @@ class AgentOrderService extends BaseService
             };
         }
 
-        if ($column == 'sf'){
+        if ($column == 'sf') {
             $arr = explode(',', $result);
             return match (true) {
                 $combination == $arr[0] => [true, $item['odds']],
@@ -730,9 +728,9 @@ class AgentOrderService extends BaseService
             };
         }
 
-        if ($column == 'sfc'){
+        if ($column == 'sfc') {
 
-            if ($item['combination'] < 0){
+            if ($item['combination'] < 0) {
                 $combination = abs($item['combination']);
             } else {
                 $combination = $item['combination'] + 6;
@@ -744,6 +742,16 @@ class AgentOrderService extends BaseService
                 default => [false, 0],
             };
         }
+    }
+
+    public function redeem($shop_id, mixed $order_id): void
+    {
+        /**
+         * @var AgentOrder $order
+         */
+        $order = AgentOrder::query()->where('id', $order_id)->where('shop_id', $shop_id)->first();
+        $order->winning_status = OrderWinningStatus::REDEEM;
+        $order->save();
     }
 
 
