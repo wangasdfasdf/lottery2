@@ -12,6 +12,8 @@ enum OrderWinningStatus: string
 
     //    未中奖
     case  NOT_WON = 'not_won';
+
+    //已兑奖
     case  REDEEM = 'redeem';
 
 
