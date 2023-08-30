@@ -435,9 +435,6 @@ class AgentOrderService extends BaseService
 
                 list($r, $ps) = $this->checkJczqResult($singleResult, $item1);
 
-//                if ($order->id == 3975658){
-//                    dd($ps);
-//                }
 
                 $odds *= $ps;
             }

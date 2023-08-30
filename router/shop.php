@@ -6,6 +6,7 @@ use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
 use app\controller\shop\AgentShopController;
 use app\controller\shop\AgentShopExpiryTimeLogController;
+use app\controller\shop\AgentShopTicketConfigController;
 use app\controller\shop\AuthController;
 use app\controller\shop\HistoryMatchController;
 use app\controller\shop\LotteryController;
@@ -59,6 +60,13 @@ Route::group("/shop/v1/", function () {
 
         //加时记录
         Route::get("expiry-time-log", [AgentShopExpiryTimeLogController::class, 'index']);
+
+        // 票面配置
+        Route::post("ticket/config", [AgentShopTicketConfigController::class, 'store']);
+        Route::get("ticket/config", [AgentShopTicketConfigController::class, 'index']);
+        Route::put("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'update']);
+        Route::get("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'show']);
+        Route::delete("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'destroy']);
 
     })->middleware([
         CheckShopLogin::class,
