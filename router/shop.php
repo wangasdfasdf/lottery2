@@ -8,6 +8,7 @@ use app\controller\shop\AgentShopController;
 use app\controller\shop\AgentShopExpiryTimeLogController;
 use app\controller\shop\AgentShopTicketConfigController;
 use app\controller\shop\AuthController;
+use app\controller\shop\ConfigController;
 use app\controller\shop\HistoryMatchController;
 use app\controller\shop\LotteryController;
 use app\controller\shop\UploadController;
@@ -68,6 +69,9 @@ Route::group("/shop/v1/", function () {
         Route::put("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'update']);
         Route::get("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'show']);
         Route::delete("ticket/config/{id:\d+}", [AgentShopTicketConfigController::class, 'destroy']);
+
+        //配置
+        Route::get('config/{key}', [ConfigController::class, 'info']);
 
     })->middleware([
         CheckShopLogin::class,
