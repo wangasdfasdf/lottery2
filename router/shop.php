@@ -2,6 +2,7 @@
 
 
 use app\controller\shop\AdController;
+use app\controller\shop\AgentConfigController;
 use app\controller\shop\AgentFeedbackController;
 use app\controller\shop\AgentOrderController;
 use app\controller\shop\AgentShopController;
@@ -72,6 +73,9 @@ Route::group("/shop/v1/", function () {
 
         //配置
         Route::get('config/{key}', [ConfigController::class, 'info']);
+
+        //代理配置
+        Route::get('agent-config/{key}', [AgentConfigController::class, 'info']);
 
     })->middleware([
         CheckShopLogin::class,
