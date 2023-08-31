@@ -1,6 +1,7 @@
 <?php
 namespace app\service;
 
+use app\model\AgentConfig;
 use app\model\Config;
 
 class AgentConfigService extends BaseService
@@ -9,6 +10,6 @@ class AgentConfigService extends BaseService
 
     public function getField(string $key): object|null
     {
-        return Config::query()->where('key', $key)->first();
+        return AgentConfig::query()->where('key', $key)->first();
     }
 }
