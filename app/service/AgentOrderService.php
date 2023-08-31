@@ -9,6 +9,7 @@ use app\model\Agent;
 use app\model\AgentConfig;
 use app\model\AgentOrder;
 use app\model\AgentShop;
+use app\model\AgentShopTicketConfig;
 use app\model\LotteryBdResult;
 use app\model\LotteryBdSfResult;
 use app\model\LotteryJcResult;
@@ -273,11 +274,18 @@ class AgentOrderService extends BaseService
 
         $printAds = AgentConfig::query()->where('key', 'print_ads')->value('value');
 
+        $type = match ($order->type){
+          'bjdc' => 'bd',
+          'basketball', 'football' => 'jc',
+          'pls' => 'pls',
+        };
+
         $data['params'] = $order->toArray();
-        $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($order->shop_id)->toArray();
-        $data['printAds'] = $printAds ? json_decode($printAds) : [];
+//        $data['userInfo'] = AgentShop::query()->select('order_prefix', 'bottom_code', 'print_type', 'address')->find($order->shop_id)->toArray();
+//        $data['printAds'] = $printAds ? json_decode($printAds) : [];
         $data['dom_height'] = $dom_height;
         $data['is_redeem'] = $is_redeem;
+        $data['print_conf'] = AgentShopTicketConfig::query()->where('shop_id', $shop_id)->where('type', $type)->first();
 
         $param = base64_encode(json_encode($data));
 

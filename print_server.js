@@ -570,7 +570,7 @@ const getRandomOrderNum=(end,prefix='')=>{
   const full=(parseInt(Math.random()*10e16).toString() + parseInt(Math.random()*10e16).toString())
   return (prefix+full).substring(0,end)
 }
-const printContent = (item,userInfo,printAds) => {
+const printContent = (item,print_conf) => {
   item.bet_info = item.bet_info||[];
   // const zsMatch=item.bet_number.match(/;共(\d+)注/)
   // const zsNum=Number(zsMatch&&zsMatch[1]?zsMatch[1]:10) //获取总共多少注
@@ -578,21 +578,21 @@ const printContent = (item,userInfo,printAds) => {
   return {
     title: "竞彩"+item.pass_type,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
-    number: item.print_order_no?item.print_order_no.split(",").join(" "):`${getRandomOrderNum(24,userInfo?userInfo.order_prefix:'')} ${getRandomOrderNum(8)} ${getRandomStr(8)}`,
+    number: item.print_order_no?item.print_order_no.split(",").join(" "):'',
     content:"",
     content_arr:resultArr.concat(['(选项固定奖金额为每1元投注对应的奖金额)',`本票最高可能固定奖金:${fixMoney(item.highest_reward)}元`,
     `单倍注数:${item.bet_number}`]),
-    code:userInfo?userInfo.bottom_code:'',//底部编号
-    printType:userInfo?userInfo.print_type:2,//打印类型 1 广告版 2 地址版
-    ads:printAds||[],
+    code:print_conf.bottom_code,//底部编号
+    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
+    ads:print_conf.ad_content||[],
     tax:fixTax(item.bet_amount,0.21),
-    address:userInfo?userInfo.address:'',//店铺地址
+    address:print_conf.address,//店铺地址
     // isShort:item.pass_method.indexOf("单场固定")>-1&&item.bet_info.length<2 &&zsNum<=3 //是否是短票
   }
 }
 // 排列三内容
 
-const printPlsContent=(item,userInfo,printAds)=>{
+const printPlsContent=(item,print_conf)=>{
   let grf_suffix=''; //用于其他特殊情况追加grf文件后缀
   const print_order_no = item.print_order_no.split(",")
   const last_no = print_order_no.pop()
@@ -660,16 +660,16 @@ const printPlsContent=(item,userInfo,printAds)=>{
     number: print_order_no.join(" ")+'  '+last_no,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
     open_time:dayjs(item.plan_end_time).format('YYYY年MM月DD日')+'开奖',
-    code:userInfo.bottom_code,//底部编号
+    code:print_conf.bottom_code,//底部编号
     code_num:'0007',
-    printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
-    ads:printAds||[],
+    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
+    ads:print_conf.ad_content||[],
     tax:fixTax(item.bet_amount,0.34),
-    address:userInfo.address,//店铺地址
+    address:print_conf.address,//店铺地址
   }
 }
 // 北单内容
-const printBdContent=(item,userInfo,printAds)=>{
+const printBdContent=(item,print_conf)=>{
   const print_order_no = item.print_order_no.split(",")
   const last_no = print_order_no.pop()
   let content=[]
@@ -744,12 +744,12 @@ const printBdContent=(item,userInfo,printAds)=>{
     contentXml:`<content_txt>${content.join("\n")}</content_txt><content_right>${contentRight.join("\n")}</content_right>`,
     number: print_order_no.join(" ")+'  '+last_no,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
-    code:userInfo.bottom_code,//底部编号
+    code:print_conf.bottom_code,//底部编号
     code_num:'00088',
-    printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
-    ads:printAds||[],
+    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
+    ads:print_conf.ad_content||[],
     tax:fixTax(item.bet_amount,0.22),
-    address:userInfo.address,//店铺地址
+    address:print_conf.address,//店铺地址
   }
 }
 // 拼接content数据 --- end ----
@@ -789,7 +789,6 @@ function printPls ({ form, params, data }) {
       ${data.exchange_money ? `<exchange_title>已兑奖</exchange_title><exchange_money>${data.exchange_money}</exchange_money>` : ''}
       </_grparam>
       </report>`, `${data.exchange_money ? '' : 'Report.ControlByName("kuang").Visible = false;'}Report.Utility.TextWrapByWord = false;`, {report,height,width:printWidth})
-  // printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
 }
 // 北京单场
 function printBjdc ({ form, params, data }) {
@@ -924,24 +923,50 @@ const base642str=(base64)=>{
 const str2base64=(str)=>{
   return Buffer.from(str).toString('base64')
 }
+function combineOrderNo(print_order_no,order_prefix){
+  const list_prefix=order_prefix.split(",")
+  const list_order=print_order_no.split(",")
+  const separator='-' //分隔符
+  const list_combine=list_order.map((v,i)=>{
+    const p = list_prefix[i]
+     if(v.indexOf('-')>-1){
+        const child = v.split(separator)
+        const pre_child = p.split(separator)
+        const _child = child.map((m,j)=>{
+          return pre_child[j]?pre_child[j]+m.substring(pre_child[j].length):m
+        })
+        return _child.join(separator)
+     }else{
+      return p?p+v.substring(p.length):v
+     }
+  })
+  return list_combine.join(',')
+}
  /**
  * 主函数
  * @param {String} params 订单详情数据
- * @param {String} userInfo 用户数据 {print_type,order_prefix,address,bottom_code}
- * @param {Array} printAds 用户配置的广告数据["体彩新春季 瑞兔呈祥送好彩","扫描右侧二维码查看活动详情"]
+ * @param {String} print_conf 用户打印配置 {print_type,order_prefix,address,bottom_code,ad_content}
  */
-function renderData({params,userInfo,printAds,dom_height,is_redeem}){
+function renderData({params,print_conf,dom_height,is_redeem}){
   const data=is_redeem>0?{exchange_money:params.winning_status=='winning'?fixNum(params.wining_amount):'0元'}:{}
+  const _print_conf={
+    print_type:1,order_prefix:'',address:'',bottom_code:'11-056988-101',ad_content:['传统足彩2.6亿大派奖火热进行中！'],
+    ...print_conf?print_conf:{}
+  }
   if(is_redeem=='2'){
     return printExchange({data})
   }
+  if(params.print_order_no && _print_conf.order_prefix){
+    // 组合用户的编号与系统编号
+    params.print_order_no=combineOrderNo(params.print_order_no,_print_conf.order_prefix)
+  }
   let form = {}
   if(params.type=="bjdc"){
-    form = printBdContent(params,userInfo,printAds)
+    form = printBdContent(params,_print_conf)
   }else if(params.type=="pls"){
-    form = printPlsContent(params,userInfo,printAds)
+    form = printPlsContent(params,_print_conf)
   }else {
-    form = printContent(params,userInfo,printAds)
+    form = printContent(params,_print_conf)
   }
   if (params.type == 'pls') return printPls({ form, params, data })
   if (params.type == 'bjdc') return printBjdc({ form, params, data })
