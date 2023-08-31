@@ -187,7 +187,7 @@ CREATE TABLE `agent_shop_$id` (
   `role_current` int(11) NOT NULL DEFAULT '0' COMMENT '本期权限',
   `is_open_online_pay` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '是否开通线上支付 -1:不开通 1:开通',
   `month_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '月付金额',
-  `month2_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '月付金额',
+  `month2_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '2月付金额',
   `quarter_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '季付金额',
   `half_year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
   `year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
