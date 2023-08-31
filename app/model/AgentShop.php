@@ -31,6 +31,7 @@ use support\Db;
  * @property int $role_current
  * @property int $is_open_online_pay
  * @property float $month_money
+ * @property float $month2_money
  * @property float $quarter_money
  * @property float $half_year_money
  * @property float $year_money
@@ -96,6 +97,9 @@ class AgentShop extends BaseModel
         'role_current', //本期权限
         'is_open_online_pay', //是否开通线上支付 -1:不开通 1:开通
         'month_money', //月付金额
+        'month2_money', //月付金额
+        'year_money', //
+        'half_year_money', //
         'quarter_money', //季付金额
         'wallet_address', //钱包地址
         'wallet_address_img', //钱包图片
@@ -105,8 +109,7 @@ class AgentShop extends BaseModel
         'created_at', //
         'updated_at', //
         'deleted_at', //
-        'year_money', //
-        'half_year_money', //
+
     ];
 
     //往期篮球
@@ -184,6 +187,7 @@ CREATE TABLE `agent_shop_$id` (
   `role_current` int(11) NOT NULL DEFAULT '0' COMMENT '本期权限',
   `is_open_online_pay` tinyint(4) NOT NULL DEFAULT '-1' COMMENT '是否开通线上支付 -1:不开通 1:开通',
   `month_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '月付金额',
+  `month2_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '月付金额',
   `quarter_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '季付金额',
   `half_year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
   `year_money` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '年付金额',
