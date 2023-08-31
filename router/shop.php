@@ -24,11 +24,13 @@ Route::group("/shop/v1/", function () {
     Route::post('login', [AuthController::class, 'login']);
     Route::get('version', [VersionController::class, 'show']);
 
+    Route::get('address', [AgentShopController::class, 'addAddress']);
+
+
     Route::group("", function () {
 
         Route::get('info', [AgentShopController::class, 'info']);
         Route::put('info', [AgentShopController::class, 'update']);
-        Route::get('address', [AgentShopController::class, 'addAddress']);
 
         // 问题反馈
         Route::get('feedback/read', [AgentFeedbackController::class, 'isRead']);
