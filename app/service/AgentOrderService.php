@@ -263,6 +263,7 @@ class AgentOrderService extends BaseService
      * @param int $order_id
      * @param $dom_height
      * @param int $shop_id
+     * @param $is_redeem
      * @return string
      */
     public function printInfo(int $order_id, $dom_height, int $shop_id, $is_redeem): string
@@ -411,7 +412,7 @@ class AgentOrderService extends BaseService
     }
 
 
-    public function calculateFootball(AgentOrder $order)
+    public function calculateFootball(AgentOrder $order): void
     {
         $detail = $order->detail;
         $matchIds = Arr::get($detail, 'match_ids', []);
@@ -453,7 +454,7 @@ class AgentOrderService extends BaseService
         $order->save();
     }
 
-    public function calculatePls(AgentOrder $order)
+    public function calculatePls(AgentOrder $order): void
     {
         $detail = $order->detail;
         $drawnNu = Arr::get($detail, 'drawn_um');
