@@ -2,6 +2,7 @@
 
 namespace app\service;
 
+use app\enum\AgentAccountDaysLogType;
 use app\enum\QueueKey;
 use app\model\Agent;
 use app\model\Config;
@@ -62,9 +63,28 @@ class AgentService extends BaseService
         $agent->wallet_address_img = $data[$walletAddress]['image'];
         $agent->save();
 
-        Redis::send(QueueKey::CANCEL_AGENT_WALLET_ADDRESS->value, ['id' => $agent_id], 60*20);
+        Redis::send(QueueKey::CANCEL_AGENT_WALLET_ADDRESS->value, ['id' => $agent_id], 60 * 20);
 
         return $agent;
+    }
+
+    /**
+     * 新加天数
+     *
+     * @param $id
+     * @param mixed $days
+     * @return void
+     */
+    public function updateAccountDays($id, mixed $days): void
+    {
+        /**
+         * @var Agent $agent
+         */
+        $agent = Agent::query()->find($id);
+        $agent->account_days += $days;
+        $agent->save();
+
+        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::ADMIN_CHARGE, []);
     }
 
 

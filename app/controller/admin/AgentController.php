@@ -120,4 +120,13 @@ class AgentController extends Controller
 
         return Response::success();
     }
+
+    public function accountDays(Request $request, $id): Response
+    {
+        $days = $request->input('days');
+
+        AgentService::instance()->updateAccountDays($id, $days);
+
+        return Response::success();
+    }
 }
