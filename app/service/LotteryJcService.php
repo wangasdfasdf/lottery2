@@ -104,7 +104,7 @@ class LotteryJcService extends BaseService
         $matchResult = Arr::get($data, 'value.matchResult', []);
         foreach ($matchResult as $item) {
 
-            if (empty($item['poolStatus'])){
+            if ($item['sectionsNo999'] == '取消'){
                 LotteryJcResult::query()->firstOrCreate([
                     'match_id' => $item['match_id'],
                     'type' => 'jczq',
