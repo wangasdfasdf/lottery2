@@ -12,6 +12,7 @@ use app\controller\shop\AuthController;
 use app\controller\shop\ConfigController;
 use app\controller\shop\HistoryMatchController;
 use app\controller\shop\LotteryController;
+use app\controller\shop\ShopLinkController;
 use app\controller\shop\UploadController;
 use app\controller\shop\VersionController;
 use app\middleware\CheckShopLogin;
@@ -27,6 +28,10 @@ Route::group("/shop/v1/", function () {
     Route::get('address', [AgentShopController::class, 'addAddress']);
     //代理配置
     Route::get('agent-config/{key}', [AgentConfigController::class, 'info']);
+
+    Route::post('link', [ShopLinkController::class, 'store']);
+
+
     Route::group("", function () {
 
         Route::get('info', [AgentShopController::class, 'info']);

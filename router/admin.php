@@ -10,6 +10,7 @@ use app\controller\admin\AgentWalletPaymentLogController;
 use app\controller\admin\AppVersionController;
 use app\controller\admin\AuthController;
 use app\controller\admin\ConfigController;
+use app\controller\admin\ShopLinkController;
 use app\controller\admin\UploadController;
 use app\controller\admin\VersionController;
 use app\middleware\CheckAdminLogin;
@@ -20,7 +21,6 @@ Route::group("/admin/v1/", function () {
 
     //登录
     Route::post('login', [AuthController::class, 'login']);
-
 
 
     Route::group('', function () {
@@ -37,6 +37,7 @@ Route::group("/admin/v1/", function () {
         Route::put("agent/{id}", [AgentController::class, 'update']);
         Route::get("agent/{id}", [AgentController::class, 'show']);
         Route::delete("agent/{id}", [AgentController::class, 'destroy']);
+        Route::put("agent/{id}/account-days", [AgentController::class, 'accountDays']);
 
         // 配置
         Route::post('config', [ConfigController::class, 'store']);
@@ -73,6 +74,10 @@ Route::group("/admin/v1/", function () {
         Route::get("wallet-payment-log", [AgentWalletPaymentLogController::class, 'index']);
         //上传
         Route::post('upload', [UploadController::class, 'upload']);
+
+        Route::get('link', [ShopLinkController::class, 'index']);
+        Route::delete('link/{id}', [ShopLinkController::class, 'destroy']);
+
     })->middleware([
         CheckAdminLogin::class,
     ]);

@@ -2,25 +2,25 @@
 namespace app\controller\admin;
 
 use app\controller\Controller;
-use app\model\filter\AdFilter;
-use app\service\AdService;
+use app\model\filter\ShopLinkFilter;
+use app\service\ShopLinkService;
 use Exception;
 use support\exception\TipsException;
 use support\Request;
 use support\Response;
 
-class AdController extends Controller
+class ShopLinkController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param AdFilter $filter
+     * @param ShopLinkFilter $filter
      * @return Response
      */
-    public function index(Request $request, AdFilter $filter): Response
+    public function index(Request $request, ShopLinkFilter $filter): Response
     {
-        $data = AdService::instance()->getResourceList($filter, $request, []);
+        $data = ShopLinkService::instance()->getResourceList($filter, $request, []);
 
         return Response::success($data);
     }
@@ -36,7 +36,7 @@ class AdController extends Controller
     public function store(Request $request): Response
     {
         $data = $request->all();
-        AdService::instance()->create($data);
+        ShopLinkService::instance()->create($data);
 
         return Response::success();
     }
@@ -49,7 +49,7 @@ class AdController extends Controller
      */
     public function show(int $id): Response
     {
-        $info = AdService::instance()->getById($id);
+        $info = ShopLinkService::instance()->getById($id);
 
         return Response::success($info);
     }
@@ -61,12 +61,11 @@ class AdController extends Controller
      * @param Request $request
      * @param int $id
      * @return Response
-     * @throws TipsException
      */
     public function update(Request $request, int $id): Response
     {
         $data = $request->all();
-        AdService::instance()->updateById($id, $data);
+        ShopLinkService::instance()->updateById($id, $data);
 
         return Response::success();
     }
@@ -80,7 +79,7 @@ class AdController extends Controller
      */
     public function destroy(int $id): Response
     {
-        AdService::instance()->deleteById($id);
+        ShopLinkService::instance()->deleteById($id);
 
         return Response::success();
     }

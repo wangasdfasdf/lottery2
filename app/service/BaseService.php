@@ -32,6 +32,7 @@ class BaseService
      * @param QueryFilter $filter
      * @param $request
      * @param array $with
+     * @param array $append
      * @return mixed
      */
     public function getResourceList(QueryFilter $filter, $request, array $with = []): mixed
