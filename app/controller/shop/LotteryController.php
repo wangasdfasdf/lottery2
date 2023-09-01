@@ -18,8 +18,6 @@ class LotteryController extends Controller
         $param = $request->input('param');
         $type = $request->input('type');
 
-        Log::info(__METHOD__, $request->all());
-
         $url = match ($type) {
             'getVtoolsConfigV1' => 'https://webapi.sporttery.cn/gateway/report/getVtoolsConfigV1.qry',
             'football' => 'https://webapi.sporttery.cn/gateway/jc/football/getMatchCalculatorV1.qry',
