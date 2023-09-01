@@ -1,7 +1,9 @@
 <?php
+
 namespace app\controller\shop;
 
 use app\controller\Controller;
+use app\model\Agent;
 use app\model\filter\ShopLinkFilter;
 use app\service\ShopLinkService;
 use Exception;
@@ -35,7 +37,10 @@ class ShopLinkController extends Controller
      */
     public function store(Request $request): Response
     {
+        $tag = $request->header('tag');
         $data = $request->all();
+        $data['agent_id'] = Agent::query()->where('tag', $tag)->value('id');
+
         ShopLinkService::instance()->create($data);
 
         return Response::success();

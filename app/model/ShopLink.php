@@ -70,4 +70,9 @@ class ShopLink extends BaseModel
         'updated_at', //
         'deleted_at', //
     ];
+
+    public function agent()
+    {
+        return $this->belongsTo(Agent::class)->select('id', 'login_name', 'name', 'avatar');
+    }
 }

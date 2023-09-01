@@ -20,7 +20,7 @@ class ShopLinkController extends Controller
      */
     public function index(Request $request, ShopLinkFilter $filter): Response
     {
-        $data = ShopLinkService::instance()->getResourceList($filter, $request, []);
+        $data = ShopLinkService::instance()->getResourceList($filter, $request, ['agent']);
 
         return Response::success($data);
     }
