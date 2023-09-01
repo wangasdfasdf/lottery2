@@ -25,8 +25,8 @@ Route::group("/shop/v1/", function () {
     Route::get('version', [VersionController::class, 'show']);
 
     Route::get('address', [AgentShopController::class, 'addAddress']);
-
-
+    //代理配置
+    Route::get('agent-config/{key}', [AgentConfigController::class, 'info']);
     Route::group("", function () {
 
         Route::get('info', [AgentShopController::class, 'info']);
@@ -76,8 +76,7 @@ Route::group("/shop/v1/", function () {
         //配置
         Route::get('config/{key}', [ConfigController::class, 'info']);
 
-        //代理配置
-        Route::get('agent-config/{key}', [AgentConfigController::class, 'info']);
+
 
     })->middleware([
         CheckShopLogin::class,

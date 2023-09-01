@@ -35,7 +35,7 @@ class AuthController extends Controller
         $shop = AgentShopAuthService::instance()->login($LoginName, $password, $machine_id);
 
         if (now() > $shop->expiry_time) {
-            return Response::res(3000, '账号已过期,请联系管理员', $shop->only('id','month_money','quarter_money'), 200);
+            return Response::res(3000, '账号已过期,请联系管理员', $shop->only('id','month_money','month2_money', 'half_year_money', 'year_money','quarter_money', 'wallet_address', 'wallet_address_img'), 200);
         }
 
 
