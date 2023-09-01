@@ -105,7 +105,7 @@ class AgentShopService extends BaseService
         $agent->account_days -= $days;
         $agent->save();
 
-        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::SHOP_REDUCE, []);
+        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::SHOP_REDUCE, $shop_id, []);
     }
 
 }

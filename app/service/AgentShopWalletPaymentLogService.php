@@ -128,7 +128,7 @@ class AgentShopWalletPaymentLogService extends BaseService
                                  */
                                 $agent = Agent::query()->find($agent->id);
 
-                                if ($agent->account_days > $days){
+                                if ($agent->account_days > $days) {
                                     $start_time = $shop->expiry_time;
 
                                     $shop->wallet_address = '';
@@ -148,6 +148,11 @@ class AgentShopWalletPaymentLogService extends BaseService
                                         'result' => $item,
                                         'model' => 'agent_shop_wallet_payment_log',
                                     ]);
+
+                                    $agent->account_days -= $days;
+                                    $agent->save();
+
+                                    AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::SHOP_REDUCE, $shopId, ['note' => '店铺冲U']);
                                 }
                             }
 

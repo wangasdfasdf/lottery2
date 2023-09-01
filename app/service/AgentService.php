@@ -101,7 +101,7 @@ class AgentService extends BaseService
         $agent->account_days += $days;
         $agent->save();
 
-        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::ADMIN_CHARGE, []);
+        AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::ADMIN_CHARGE, 0, []);
     }
 
 

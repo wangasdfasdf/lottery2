@@ -106,7 +106,7 @@ class AgentWalletPaymentLogService extends BaseService
                             $agent->save();
 
 
-                            AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::U_CHARGE, [
+                            AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::U_CHARGE, 0, [
                                 'agent_id' => $shopId,
                                 'agent_name' => $shopName,
                                 'amount' => $amount,

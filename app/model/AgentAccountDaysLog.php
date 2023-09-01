@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
  *
  * @property int $id
  * @property int $agent_id
+ * @property int $shop_id
  * @property int $days
  * @property int $start_days
  * @property int $end_days
@@ -68,6 +69,7 @@ class AgentAccountDaysLog extends BaseModel
         'updated_at', //
         'deleted_at', //
         'other', //
+        'shop_id', //
     ];
 
     protected $hidden = [
