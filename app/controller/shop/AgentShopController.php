@@ -42,6 +42,9 @@ class AgentShopController extends Controller
         return Response::success();
     }
 
+    /**
+     * @throws TipsException
+     */
     public function addAddress(Request $request): Response
     {
         $shop_id = $request->input('shop_id');

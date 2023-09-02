@@ -21,10 +21,20 @@ class AgentService extends BaseService
         $data = parent::getResourceList($filter, $request, $with);
 
         $data['list'] = array_map(function ($item) {
-            $data = Db::table('agent_shop_' . $item->id)->selectRaw('count(1) as total,  COUNT(IF(CURRENT_TIMESTAMP >= expiry_time,1,null)) as expire_num, COUNT(IF(CURRENT_TIMESTAMP < expiry_time,1,null)) as effective_num')->first();
-            $item->total = $data->total;
-            $item->expire_num = $data->expire_num;
-            $item->effective_num = $data->effective_num;
+            $sql = sprintf("SHOW TABLES LIKE '%s'", 'agent_shop_' . $item->id);
+            $result = Db::select($sql);
+
+            $total = $expire_num = $effective_num = 0;
+            if (!empty($result)) {
+                $data = Db::table('agent_shop_' . $item->id)->selectRaw('count(1) as total,  COUNT(IF(CURRENT_TIMESTAMP >= expiry_time,1,null)) as expire_num, COUNT(IF(CURRENT_TIMESTAMP < expiry_time,1,null)) as effective_num')->first();
+                $total = $data->total;
+                $expire_num = $data->expire_num;
+                $effective_num = $data->effective_num;
+            }
+
+            $item->total = $total;
+            $item->expire_num = $expire_num;
+            $item->effective_num = $effective_num;
             return $item;
         }, $data['list']);
 

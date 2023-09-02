@@ -15,6 +15,7 @@ use app\service\LotteryJcResultService;
 use app\service\LotteryJcService;
 use app\service\LotteryPlsResultService;
 use app\service\LotteryPlwResultService;
+use support\Db;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,10 +46,8 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        AgentOrderService::instance()->calculate();
 
-        dd(1);
-
+        dd($result);
         return self::SUCCESS;
     }
 
