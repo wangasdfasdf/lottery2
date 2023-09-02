@@ -3,6 +3,7 @@
 
 use app\controller\admin\AdController;
 use app\controller\admin\AdminUserController;
+use app\controller\admin\AgentAccountDaysLogController;
 use app\controller\admin\AgentController;
 use app\controller\admin\AgentOrderController;
 use app\controller\admin\AgentShopController;
@@ -77,6 +78,10 @@ Route::group("/admin/v1/", function () {
 
         Route::get('link', [ShopLinkController::class, 'index']);
         Route::delete('link/{id}', [ShopLinkController::class, 'destroy']);
+
+        //账户记录
+        Route::get('agent/account-day/log', [AgentAccountDaysLogController::class, 'index']);
+
 
     })->middleware([
         CheckAdminLogin::class,

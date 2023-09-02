@@ -10,7 +10,7 @@ class AgentAccountDaysLogService extends BaseService
 {
     public $model = 'app\model\AgentAccountDaysLog';
 
-    public function createOne(Agent $agent, float $days, AgentAccountDaysLogType $type, int $shopId = 0, array $other): void
+    public function createOne(Agent $agent, float $days, AgentAccountDaysLogType $type, int $shopId = 0, array $other = []): void
     {
         if (empty($days)) {
             return;
