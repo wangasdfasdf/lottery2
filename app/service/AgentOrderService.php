@@ -275,10 +275,10 @@ class AgentOrderService extends BaseService
 
         $printAds = AgentConfig::query()->where('key', 'print_ads')->value('value');
 
-        $type = match ($order->type){
-          'bjdc' => 'bd',
-          'basketball', 'football' => 'jc',
-          'pls' => 'pls',
+        $type = match ($order->type) {
+            'bjdc' => 'bd',
+            'basketball', 'football' => 'jc',
+            'pls' => 'pls',
         };
 
         $data['params'] = $order->toArray();
@@ -458,9 +458,9 @@ class AgentOrderService extends BaseService
     {
         $detail = $order->detail;
         $drawnNu = Arr::get($detail, 'drawn_um');
-        $type = Arr::get($detail, 'type');     // 1.直选  2.组三 3.组六
+        $type = Arr::get($detail, 'type');     // 1.直选  2.组三 3.组六 4:直组混选
 
-        $category = Arr::get($detail, 'category'); //  1标准选号  2.和值投注 3.跨度投注 4.组合复式 5.组合胆拖 6:号码直选
+        $category = Arr::get($detail, 'category'); //  1标准选号  2.和值投注 3.跨度投注 4.组合复式 5.组合胆拖 6:号码直选 7:2码全包 8:直选二同 9:直选三同
         $content = Arr::get($detail, 'content');
 
         /**
@@ -509,7 +509,6 @@ class AgentOrderService extends BaseService
         if ($category == 3) {
             if (\in_array(\max($drawResultArr) - \min($drawResultArr), $content['first']) && ($type == 1 || $type == $resultType)) {
                 $winingAmount = match ($type) {
-                    '1' => $result->amount1,
                     '2' => $result->amount2,
                     '3' => $result->amount3,
                 };
@@ -551,7 +550,62 @@ class AgentOrderService extends BaseService
                     }
                 }
             }
+        }
 
+        //2码全包
+        if (in_array($type, [2, 3]) && $category == 7) {
+            $first = $content['first'];
+            $t = 0;
+            foreach ($drawResultArr as $i) {
+                if (in_array($i, $first)) {
+                    $t++;
+                }
+            }
+            if ($t >= 2) {
+                $winingAmount += ($resultType == 3 ? $result->amount3 : $result->amount2);
+            }
+        }
+
+        //8:直选二同
+        if ($type == 1 && $category == 8 && $result->type == 1) {
+            $first = $content['first'];
+            $t = 0;
+            foreach ($drawResultArr as $i) {
+                if (in_array($i, $first)) {
+                    $t++;
+                }
+            }
+            if ($t >= 2) {
+                $winingAmount += $result->amount1;
+            }
+        }
+
+        //9:直选三同
+        if ($type == 1 && $category == 8 && $result->type == 3) {
+            $first = $content['first'];
+
+            if (in_array($drawResult[0], $first)) {
+                $winingAmount += $result->amount1;
+            }
+        }
+
+        // 4:直组混选
+        if ($type == 4) {
+            sort($drawResultArr);
+            foreach ($content as $item) {
+                if ($item['type'] == 1) {
+                    if ($result->draw_result == $type['content']) {
+                        $winingAmount += $result->amount1;
+                    } else {
+                        $c = explode(' ', $type['content']);
+                        sort($c);
+
+                        if ($drawResultArr == $c) {
+                            $winingAmount += ($resultType == 3 ? $result->amount3 : $result->amount2);
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -761,6 +815,28 @@ class AgentOrderService extends BaseService
         $order = AgentOrder::query()->where('id', $order_id)->where('shop_id', $shop_id)->first();
         $order->winning_status = OrderWinningStatus::REDEEM;
         $order->save();
+    }
+
+    private function checkPlsResult(LotteryPlsResult $result, array $detail)
+    {
+        $drawnNu = Arr::get($detail, 'drawn_um');
+        $type = Arr::get($detail, 'type');     // 1.直选  2.组三 3.组六 4:直组混选
+
+        $category = Arr::get($detail, 'category'); //  1标准选号  2.和值投注 3.跨度投注 4.组合复式 5.组合胆拖 6:号码直选 7:2码全包 8:直选二同 9:直选三同
+        $content = Arr::get($detail, 'content');
+
+        $winingAmount = 0;
+
+        //投注组三  中奖结果不是组三
+        if ($type == 2 && $result->type != 1) {
+            return [false, 0];
+        }
+
+        //投注组六  中奖结果不是组六
+        if ($type == 3 && $result->type != 2) {
+            return [false, 0];
+        }
+
     }
 
 

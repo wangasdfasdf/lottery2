@@ -46,8 +46,25 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
+        $content = [
+            [
+                'type' => 1,
+                'content' => '1 2 3',
+            ],
+            [
+                'type' => 2,
+                'content' => '1 2 3',
+            ],
+            [
+                'type' => 3,
+                'content' => '1 2 3',
+            ]
+        ];
 
-        dd($result);
+        dd(json_encode($content));
+
+        dd($a == $b);
+
         return self::SUCCESS;
     }
 
