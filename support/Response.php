@@ -14,6 +14,8 @@
 
 namespace support;
 
+use app\service\RasService;
+
 /**
  * Class Response
  * @package support
@@ -22,19 +24,32 @@ class Response extends \Webman\Http\Response
 {
     public static function success($data = [], string $message = 'ok'): Response
     {
+        $t = json_encode([
+            'time' => time(),
+            'project' => 'lottery',
+        ]);
+
         return json([
             'code' => 200,
             'message' => $message,
             'data' => $data,
+            'salt' => RasService::instance()->privateEncode($t),
         ]);
     }
 
     public static function error(string $message, $data = []): Response
     {
+
+        $data = json_encode([
+            'time' => time(),
+            'project' => 'lottery',
+        ]);
+
         return json([
             'code' => 400,
             'message' => $message,
             'data' => $data,
+            'salt' => RasService::instance()->privateEncode($data),
         ]);
     }
 

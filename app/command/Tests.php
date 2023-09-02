@@ -15,6 +15,7 @@ use app\service\LotteryJcResultService;
 use app\service\LotteryJcService;
 use app\service\LotteryPlsResultService;
 use app\service\LotteryPlwResultService;
+use app\service\RasService;
 use support\Db;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -46,24 +47,11 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $content = [
-            [
-                'type' => 1,
-                'content' => '1 2 3',
-            ],
-            [
-                'type' => 2,
-                'content' => '1 2 3',
-            ],
-            [
-                'type' => 3,
-                'content' => '1 2 3',
-            ]
-        ];
+        $data = json_encode([
+            'time' => time(),
+            'project' => 'lottery',
+        ]);
 
-        dd(json_encode($content));
-
-        dd($a == $b);
 
         return self::SUCCESS;
     }
