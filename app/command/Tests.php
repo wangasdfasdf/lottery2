@@ -47,10 +47,8 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $data = json_encode([
-            'time' => time(),
-            'project' => 'lottery',
-        ]);
+        $str = 'G0JAKkMeoXu4WBmSSZj2ZyukWYPELYuh4b2hpabvSEfpTLAijNHfT8Em1ZAeUFtdJ1JATSy2DksWBr1rzFMUd6FnbSx69W1wNilyFsVe57CK/WEba9nXxqo6GP6DAy44xJVvnbC7tHLu1zTyqSsfm3YvxtPjhFIDik4nmIZZkN8=';
+        dd(RasService::instance()->privateDecode($str));
 
 
         return self::SUCCESS;

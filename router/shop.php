@@ -16,6 +16,7 @@ use app\controller\shop\ShopLinkController;
 use app\controller\shop\UploadController;
 use app\controller\shop\VersionController;
 use app\middleware\CheckShopLogin;
+use app\middleware\CheckShopRsaLogin;
 use app\middleware\CheckShopTag;
 use Webman\Route;
 
@@ -90,5 +91,6 @@ Route::group("/shop/v1/", function () {
 
 })->middleware([
     CheckShopTag::class,
+    CheckShopRsaLogin::class,
 
 ]);
