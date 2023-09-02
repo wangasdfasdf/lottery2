@@ -15,7 +15,7 @@ class CheckShopRsaLogin implements MiddlewareInterface
 
     public function process(Request $request, callable $next): Response
     {
-        $str = $request->input('sign');
+        $str = $request->input('sign','');
 
         $arr = RasService::instance()->privateDecode($str);
 
