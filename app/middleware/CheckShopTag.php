@@ -40,7 +40,7 @@ class CheckShopTag implements MiddlewareInterface
         }
 
         $agent_id = self::$agent_tag_map[$tag];
-        Log::info('CheckShopTag', compact('tag', 'agent_id'));
+
         $this->setSuffix($agent_id);
 
         \request()->offSet('machine_id', $machine_id);

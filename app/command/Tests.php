@@ -46,26 +46,17 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        //获取北单赛果
+        LotteryBdResultService::instance()->capture();
+        //获取北单胜负赛果
+        LotteryBdSfResultService::instance()->capture();
+        //获取竞彩赛果
+        LotteryJcResultService::instance()->capture();
 
-        $arr = [
-            'type' => '4',
-            'content' => [
-                [
-                    'content' => '1 2 3',
-                    'type' => 1,
-                ],
-                [
-                    'content' => '4 5 6',
-                    'type' => 2,
-                ]
-            ],
-            'category' => '4',
-            'drawn_um' => 23220,
-            'bet_multiplier' => 1,
-        ];
-
-
-        dd(json_encode($arr));
+        //获取排列3赛果
+        LotteryPlsResultService::instance()->capture();
+        //获取排列5赛果
+        LotteryPlwResultService::instance()->capture();
 
         return self::SUCCESS;
     }
