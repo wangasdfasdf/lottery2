@@ -2,6 +2,7 @@
 
 namespace process;
 
+use app\service\AgentOrderService;
 use app\service\AgentShopWalletPaymentLogService;
 use app\service\AgentWalletPaymentLogService;
 use app\service\LotteryBdResultService;
@@ -48,8 +49,13 @@ class Task
         });
 
         new Crontab("0 * * * * *", function () {
-            //获取取消比赛的数据
+            //抓取代理充值
             AgentShopWalletPaymentLogService::instance()->capture();
+        });
+
+        new Crontab("0 * * * * *", function () {
+            //计算是否中奖
+            AgentOrderService::instance()->calculate();
         });
     }
 }
