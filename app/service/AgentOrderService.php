@@ -515,7 +515,7 @@ class AgentOrderService extends BaseService
             }
         }
 
-        if ($category == 4) {
+        if (in_array($type, [1,2,3]) &&$category == 4) {
             if (empty(\array_diff($drawResultArr, $content['first'])) && $resultType == 3) {
                 $winingAmount = $result->amount1;
             }
@@ -594,10 +594,11 @@ class AgentOrderService extends BaseService
             sort($drawResultArr);
             foreach ($content as $item) {
                 if ($item['type'] == 1) {
-                    if ($result->draw_result == $type['content']) {
+
+                    if ($result->draw_result == $item['content']) {
                         $winingAmount += $result->amount1;
                     } else {
-                        $c = explode(' ', $type['content']);
+                        $c = explode(' ', $item['content']);
                         sort($c);
 
                         if ($drawResultArr == $c) {
