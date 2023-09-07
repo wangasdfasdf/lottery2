@@ -3,6 +3,7 @@
 namespace app\model;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -47,10 +48,10 @@ class AgentAccountDaysLog extends BaseModel
      * @var array
      */
     protected $casts = [
-         'created_at' => 'datetime:Y-m-d H:i:s',
-         'updated_at' => 'datetime:Y-m-d H:i:s',
-         'deleted_at' => 'datetime:Y-m-d H:i:s',
-         'other' => 'array',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'other' => 'array',
     ];
 
     /**
@@ -76,4 +77,9 @@ class AgentAccountDaysLog extends BaseModel
         'deleted_at',
         'other',
     ];
+
+    public function shop(): BelongsTo
+    {
+        return $this->belongsTo(AgentShop::class);
+    }
 }

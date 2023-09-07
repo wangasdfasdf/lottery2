@@ -20,7 +20,7 @@ class AgentAccountDaysLogController extends Controller
      */
     public function index(Request $request, AgentAccountDaysLogFilter $filter): Response
     {
-        $data = AgentAccountDaysLogService::instance()->getResourceList($filter, $request, []);
+        $data = AgentAccountDaysLogService::instance()->getResourceList($filter, $request, ['shop']);
 
         return Response::success($data);
     }
