@@ -7,7 +7,7 @@ enum AgentAccountDaysLogType: string
      // U充值
     case U_CHARGE = 'u_charge';
 
-    //跟店铺充值
+    //给店铺充值
     case SHOP_REDUCE = 'shop_reduce';
 
     //后台添加

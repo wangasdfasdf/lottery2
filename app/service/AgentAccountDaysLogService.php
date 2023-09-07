@@ -18,7 +18,7 @@ class AgentAccountDaysLogService extends BaseService
 
         AgentAccountDaysLog::query()->create([
             'agent_id' => $agent->id,
-            'shop_id' => 0,
+            'shop_id' => $shopId,
             'days' => $days,
             'start_days' => $agent->account_days - $days,
             'end_days' => $agent->account_days,
