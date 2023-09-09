@@ -608,11 +608,13 @@ class AgentOrderService extends BaseService
                     }
                 }
             }
+
+            goto aa;
         }
 
 
         $winingAmount = $winingAmount * $order->bet_multiplier;
-
+        aa:
         $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
         $order->wining_amount = $winingAmount;
         $order->save();
