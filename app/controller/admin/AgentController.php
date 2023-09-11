@@ -3,6 +3,7 @@
 namespace app\controller\admin;
 
 use app\controller\Controller;
+use app\enum\QueueKey;
 use app\enum\StatusEnum;
 use app\middleware\CheckShopTag;
 use app\model\Agent;
@@ -14,6 +15,7 @@ use Respect\Validation\Validator;
 use support\exception\TipsException;
 use support\Request;
 use support\Response;
+use Webman\RedisQueue\Redis;
 
 class AgentController extends Controller
 {
@@ -60,6 +62,7 @@ class AgentController extends Controller
          */
         $agent = AgentService::instance()->create($data);
 
+        Redis::send(QueueKey::CREATE_AGENT_CLIENT->value, ['id' => $agent->id,]);
 
         return Response::success();
     }

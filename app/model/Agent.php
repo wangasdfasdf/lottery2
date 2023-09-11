@@ -22,6 +22,7 @@ use Illuminate\Support\Carbon;
  * @property int $account_days
  * @property string $wallet_address_img
  * @property string $wallet_address
+ * @property string $client_url
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
@@ -81,5 +82,6 @@ class Agent extends BaseModel
         'account_days', //
         'wallet_address_img', //
         'wallet_address', //
+        'client_url', //
     ];
 }

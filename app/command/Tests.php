@@ -49,18 +49,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $path1 = "/home/wwwroot/linux-client-package/attach/core.dat";
-        $aa = '1234567';
-//        file_put_contents($path1, $aa);
-//        $command = 'cd /home/wwwroot/linux-client-package && node build/builder.js';
-//        exec($command, $output);
-//var_dump($output);
 
-        $object = "client/" . Str::random() . '.exe';
-//        $content = file_get_contents('/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_'.$aa.'.exe');
-        $path = '/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_' . $aa . '.exe';
-//        dd($content);
-        OssService::instance()->uploadFile($object, $path);
 
         dd(1);
         return self::SUCCESS;
