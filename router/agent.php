@@ -64,6 +64,9 @@ Route::group("/agent/v1/", function () {
         //钱包记录
         Route::get("shop/wallet-payment-log", [AgentShopWalletPaymentLogController::class, 'index']);
 
+        //oss上传
+        Route::get("policy", [UploadController::class, 'policy']);
+
     })->middleware([
         CheckAgentLogin::class
     ]);

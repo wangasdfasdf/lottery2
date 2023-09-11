@@ -82,7 +82,8 @@ Route::group("/shop/v1/", function () {
         //配置
         Route::get('config/{key}', [ConfigController::class, 'info']);
 
-
+        //oss上传
+        Route::get("policy", [UploadController::class, 'policy']);
 
     })->middleware([
         CheckShopLogin::class,

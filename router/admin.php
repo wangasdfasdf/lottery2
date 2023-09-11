@@ -83,7 +83,8 @@ Route::group("/admin/v1/", function () {
         //账户记录
         Route::get('agent/account-day/log', [AgentAccountDaysLogController::class, 'index']);
 
-
+        //oss上传
+        Route::get("policy", [UploadController::class, 'policy']);
     })->middleware([
         CheckAdminLogin::class,
     ]);

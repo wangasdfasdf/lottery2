@@ -3,6 +3,7 @@
 namespace app\controller\agent;
 
 use app\controller\Controller;
+use app\service\OssService;
 use Illuminate\Support\Str;
 use support\Request;
 use support\Response;
@@ -35,5 +36,17 @@ class UploadController extends Controller
         $url = config('app.url') . '/' . $filePath;
         
         return Response::success(compact('url'));
+    }
+
+
+    /**
+     * 获取上传令牌
+     *
+     */
+    public function policy(): Response
+    {
+        $result = OssService::instance()->policy('shop');
+
+        return Response::success(compact('result'));
     }
 }
