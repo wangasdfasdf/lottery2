@@ -2,8 +2,8 @@
 
 return [
     'oss' => [
-        'accessKeyId' => 'LTAI5tBffpnSt8woXK5bAM4r',
-        'accessKeySecret' => 'sW3zSsOHAJSd9WgQUfF0gXKpz6l70H',
+        'accessKeyId' => getenv('OSS_ACCESSKEY_ID'),
+        'accessKeySecret' => getenv('OSS_ACCESSKEY_SECRET'),
         'endpoint' => 'oss-cn-hongkong.aliyuncs.com',
         'bucket' => '781ad648b34d72c',
     ],

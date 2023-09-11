@@ -48,15 +48,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ids = Agent::query()->pluck('id');
 
-        foreach ($ids as $id){
-            Db::statement(<<<AAA
-ALTER TABLE `agent_shop_$id` 
-ADD COLUMN `domain` varchar(255) NULL COMMENT '域名' AFTER `admin_id`;
-AAA
-);
-        }
 
         dd(1);
 

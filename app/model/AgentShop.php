@@ -39,6 +39,7 @@ use support\Db;
  * @property string $wallet_address_img
  * @property string $note
  * @property string $token
+ * @property string $domain
  * @property int $admin_id
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -109,6 +110,7 @@ class AgentShop extends BaseModel
         'created_at', //
         'updated_at', //
         'deleted_at', //
+        'domain', //
 
     ];
 
