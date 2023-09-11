@@ -57,10 +57,10 @@ class Tests extends Command
 //var_dump($output);
 
         $object = "client/" . Str::random() . '.exe';
-        $content = file_get_contents('/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_'.$aa.'.exe');
-
-        dd($content);
-        OssService::instance()->put($object, $content);
+//        $content = file_get_contents('/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_'.$aa.'.exe');
+        $path = '/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_' . $aa . '.exe';
+//        dd($content);
+        OssService::instance()->uploadFile($object, $path);
 
         dd(1);
         return self::SUCCESS;
