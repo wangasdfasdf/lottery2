@@ -195,6 +195,7 @@ CREATE TABLE `agent_shop_$id` (
   `wallet_address_img` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '钱包图片',
   `note` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '备注',
   `token` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'token',
+  `domain` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '新域名',
   `admin_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT '创建管理员ID',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
