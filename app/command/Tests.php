@@ -54,13 +54,14 @@ class Tests extends Command
         file_put_contents($path1, $aa);
         $command = 'cd /home/wwwroot/linux-client-package && node build/builder.js';
         exec($command, $output);
-
+var_dump($output);
 
         $object = "client/" . Str::random() . '.exe';
         $content = file_get_contents('/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_'.$aa.'.exe');
 
         OssService::instance()->put($object, $content);
 
+        dd(1);
         return self::SUCCESS;
     }
 
