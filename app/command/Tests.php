@@ -2,6 +2,7 @@
 
 namespace app\command;
 
+use app\enum\QueueKey;
 use app\middleware\traits\SetSuffix;
 use app\model\Agent;
 use app\model\AgentOrder;
@@ -25,6 +26,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
+use Webman\RedisQueue\Redis;
 
 
 class Tests extends Command
@@ -49,6 +51,11 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $ids = Agent::query()->where('client_url', '')->pluck('id');
+
+        foreach ($ids as $id) {
+            Redis::send(QueueKey::CREATE_AGENT_CLIENT->value, ['id' => $id,]);
+        }
 
 
         dd(1);
