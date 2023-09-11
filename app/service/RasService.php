@@ -51,7 +51,7 @@ class RasService extends BaseService
 
             $pkey = openssl_pkey_get_private($key);//$privateKey为私钥字符串
 
-            $result        = openssl_private_encrypt($data, $encryptedData, $pkey);
+            $result = openssl_private_encrypt($data, $encryptedData, $pkey);
             $encryptedData = base64_encode($encryptedData);
 
             if (!$result) {
@@ -79,7 +79,7 @@ class RasService extends BaseService
         try {
             $rsa_public = file_get_contents(\base_path('public.pem'));
 
-            $key    = openssl_pkey_get_public($rsa_public);
+            $key = openssl_pkey_get_public($rsa_public);
             $crypto = '';
 
             if (!$key) {
@@ -107,9 +107,6 @@ class RasService extends BaseService
         //openssl_public_encrypt($data,$encrypted,$this->pu_key);//公钥加密
 
 
-
-
     }
-
 
 }

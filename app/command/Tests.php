@@ -50,12 +50,16 @@ class Tests extends Command
     {
 
 
-        dd(1);
-
         $object = 'machine/539511ac1bc32b9f3b4b1f90f8ac3b6b';
         $content = '{"domain":"http://headache.jcprint.vip"}';
 
         $content = RasService::instance()->privateEncode($content);
+
+        RasService::instance()->publicDecode($content);
+        dd(1);
+
+
+
 
         OssService::instance()->put($object, $content);
 

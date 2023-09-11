@@ -15,6 +15,16 @@ class AgentShopService extends BaseService
 {
     public $model = 'app\model\AgentShop';
 
+    public function syncDomain(string $machine, string $domain): void
+    {
+        $object = 'machine/' . $machine;
+        $content = '{"domain":"' . $domain . '"}';
+
+        $content = RasService::instance()->privateEncode($content);
+
+        OssService::instance()->put($object, $content);
+    }
+
     /**
      * @throws TipsException
      */
@@ -106,6 +116,20 @@ class AgentShopService extends BaseService
         $agent->save();
 
         AgentAccountDaysLogService::instance()->createOne($agent, $days, AgentAccountDaysLogType::SHOP_REDUCE, $shop_id, []);
+    }
+
+    /**
+     * @throws TipsException
+     */
+    public function adminUpdateById(int $id, array $data): void
+    {
+        /**
+         * @var AgentShop $shop
+         */
+        $shop = parent::updateById($id, $data);
+
+        $this->syncDomain($shop->machine_id, $shop->domain);
+
     }
 
 }

@@ -18,6 +18,7 @@ use support\Response;
 class AgentShopController extends Controller
 {
     use SetSuffix;
+
     /**
      * Display a listing of the resource.
      *
@@ -67,7 +68,7 @@ class AgentShopController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show(Request $request,int $id): Response
+    public function show(Request $request, int $id): Response
     {
         Validator::input($request->all(), [
             'agent_id' => Validator::NotEmpty()->setName('代理'),
@@ -103,6 +104,31 @@ class AgentShopController extends Controller
 
         return Response::success();
     }
+
+    /**
+     * @throws TipsException
+     */
+    public function updateDomain(Request $request, int $id): Response
+    {
+        Validator::input($request->all(), [
+            'agent_id' => Validator::NotEmpty()->setName('代理'),
+        ]);
+
+        $agent_id = $request->input('agent_id');
+
+        $this->setSuffix($agent_id);
+        $domain = $request->input('domain');
+
+        $data = [
+            'domain' => $domain,
+        ];
+
+        AgentShopService::instance()->adminUpdateById($id, $data);
+
+
+        return Response::success();
+    }
+
 
     /**
      * Remove the specified resource from storage.

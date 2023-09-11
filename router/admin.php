@@ -56,6 +56,7 @@ Route::group("/admin/v1/", function () {
         //店铺
         Route::get('shop', [AgentShopController::class, 'index']);
         Route::get('shop/{id:\d+}', [AgentShopController::class, 'show']);
+        Route::put('shop/{id:\d+}/domain', [AgentShopController::class, 'updateDomain']);
 //        Route::post('shop', [AgentShopController::class, 'store']);
 //        Route::put('shop/{id}', [AgentShopController::class, 'update']);
 //        Route::delete('shop/{id}', [AgentShopController::class, 'destroy']);
