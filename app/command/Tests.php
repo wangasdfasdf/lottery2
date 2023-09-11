@@ -18,6 +18,7 @@ use app\service\LotteryPlsResultService;
 use app\service\LotteryPlwResultService;
 use app\service\OssService;
 use app\service\RasService;
+use Illuminate\Support\Str;
 use support\Db;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,12 +50,14 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path1 = "/home/wwwroot/linux-client-package/attach/core.dat";
-        file_put_contents($path1, '123456');
+        $aa = '123456';
+        file_put_contents($path1, $aa);
         $command = 'cd /home/wwwroot/linux-client-package && node build/builder.js';
         exec($command, $output);
 
-        dd($output);
 
+        $object = "client/" . Str::random() . '.exe';
+        $content = file_get_contents('/home/wwwroot/linux-client-package/dist_electron/contest-client_setup_1.0.0_'.$aa.'.exe');
 
         OssService::instance()->put($object, $content);
 
