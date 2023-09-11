@@ -50,7 +50,7 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $path1 = "/home/wwwroot/linux-client-package/attach/core.dat";
-        $aa = '123456';
+        $aa = '1234567';
         file_put_contents($path1, $aa);
         $command = 'cd /home/wwwroot/linux-client-package && node build/builder.js';
         exec($command, $output);
