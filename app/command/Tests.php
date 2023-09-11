@@ -48,17 +48,12 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $path1 = "/home/wwwroot/linux-client-package/attach/core.dat";
+        file_put_contents($path1, '123456');
+        $command = 'cd /home/wwwroot/linux-client-package && node build/builder.js';
+        exec($command, $output);
 
-
-        $object = 'machine/539511ac1bc32b9f3b4b1f90f8ac3b6b';
-        $content = '{"domain":"http://headache.jcprint.vip"}';
-
-        $content = RasService::instance()->privateEncode($content);
-
-        RasService::instance()->publicDecode($content);
-        dd(1);
-
-
+        dd($output);
 
 
         OssService::instance()->put($object, $content);
