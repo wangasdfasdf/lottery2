@@ -67,6 +67,7 @@ class ConfigController extends Controller
      * @param Request $request
      * @param int $id
      * @return Response
+     * @throws TipsException
      */
     public function update(Request $request, int $id): Response
     {

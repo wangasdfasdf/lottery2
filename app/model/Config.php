@@ -2,6 +2,8 @@
 
 namespace app\model;
 
+use app\enum\ConfigKey;
+use app\service\OssService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -44,9 +46,9 @@ class Config extends BaseModel
      * @var array
      */
     protected $casts = [
-         'created_at' => 'datetime:Y-m-d H:i:s',
-         'updated_at' => 'datetime:Y-m-d H:i:s',
-         'deleted_at' => 'datetime:Y-m-d H:i:s',
+        'created_at' => 'datetime:Y-m-d H:i:s',
+        'updated_at' => 'datetime:Y-m-d H:i:s',
+        'deleted_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     /**
@@ -64,4 +66,20 @@ class Config extends BaseModel
         'updated_at', //
         'deleted_at', //
     ];
+
+    /**
+     * 模型的“引导”方法。
+     *
+     * @return void
+     */
+    protected static function booted()
+    {
+        static::saved(function (Config $config) {
+            if ($config->key == ConfigKey::DEFAULT_DOMAIN->value) {
+                $object = 'machine/default-fc63d4503ad0da7d811b3db03b231fd6';
+                $content = '{"domain":"' . $config->value . '"}';
+                OssService::instance()->put($object, $content);
+            }
+        });
+    }
 }

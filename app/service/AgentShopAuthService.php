@@ -2,8 +2,10 @@
 
 namespace app\service;
 
+use app\enum\ConfigKey;
 use app\enum\StatusEnum;
 use app\model\AgentShop;
+use app\model\Config;
 use app\traits\Token;
 use support\exception\TipsException;
 
@@ -43,8 +45,18 @@ class AgentShopAuthService extends BaseService
 
 
         if (empty($shop->machine_id)) {
+
+            $domeLists = Config::query()->where('key', ConfigKey::DOMAIN_LISTS)->value('value');
+            $domainList = explode(',', $domeLists);
+            $domain = $domainList[array_rand($domainList)];
             $shop->machine_id = $machine_id;
+            $shop->domain = $domain;
             $shop->save();
+
+            $object = 'machine/'.$shop->machine_id;
+            $content = '{"domain":"' . $domain . '"}';
+            OssService::instance()->put($object, $content);
+
         }
 
         if ($shop->machine_id != $machine_id) {

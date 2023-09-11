@@ -30,6 +30,10 @@ class AgentWalletPaymentLogService extends BaseService
         $data = Config::query()->where('key', 'wallet_address')->value('value');
         $u2day = Config::query()->where('key', ConfigKey::U2Day2)->value('value');
 
+        if (empty($data)){
+            return;
+        }
+
         $data = \json_decode($data, true);
 
         $client = new Client();
