@@ -25,7 +25,10 @@ class AgentShopController extends Controller
     public function index(Request $request, AgentShopFilter $filter): Response
     {
         $data = AgentShopService::instance()->getResourceList($filter, $request, []);
-
+        $data['list'] = array_map(function ($item){
+            $item->makeHidden('domain');
+            return $item;
+        }, $data['list']);
         return Response::success($data);
     }
 
@@ -58,7 +61,7 @@ class AgentShopController extends Controller
      */
     public function show(int $id): Response
     {
-        $info = AgentShopService::instance()->getById($id);
+        $info = AgentShopService::instance()->getById($id)->makeHidden('domain');
 
         return Response::success($info);
     }
