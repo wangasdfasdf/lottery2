@@ -55,6 +55,7 @@ class AgentShopAuthService extends BaseService
 
             $object = 'machine/'.$shop->machine_id;
             $content = '{"domain":"' . $domain . '"}';
+            $content = RasService::instance()->privateEncode($content);
             OssService::instance()->put($object, $content);
 
         }

@@ -4,6 +4,7 @@ namespace app\model;
 
 use app\enum\ConfigKey;
 use app\service\OssService;
+use app\service\RasService;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
@@ -78,6 +79,7 @@ class Config extends BaseModel
             if ($config->key == ConfigKey::DEFAULT_DOMAIN->value) {
                 $object = 'machine/default-fc63d4503ad0da7d811b3db03b231fd6';
                 $content = '{"domain":"' . $config->value . '"}';
+                $content = RasService::instance()->privateEncode($content);
                 OssService::instance()->put($object, $content);
             }
         });
