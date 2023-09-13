@@ -28,7 +28,7 @@ class AuthController extends Controller
 
         ['login_name' => $LoginName, 'password' => $password] = $data;
 
-        $admin = AgentAuthService::instance()->login($LoginName, $password);
+        $admin = AgentAuthService::instance()->login($LoginName, $password)->makeHidden('domains');
 
         return Response::success($admin);
     }
@@ -44,7 +44,7 @@ class AuthController extends Controller
     {
         $agent_id = $request->input('agent_id');
 
-        $info = AgentService::instance()->getById($agent_id);
+        $info = AgentService::instance()->getById($agent_id)->makeHidden('domains');
 
         return Response::success($info);
     }

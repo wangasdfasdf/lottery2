@@ -116,5 +116,9 @@ class AgentFilter extends QueryFilter
     }
 
 
+    public function domains($domains)
+    {
+        return $this->builder->whereJsonContains('domains', $domains);
+    }
 
 }

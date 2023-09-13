@@ -23,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property string $wallet_address_img
  * @property string $wallet_address
  * @property string $client_url
+ * @property array $domains
  * @property Carbon $created_at
  * @property Carbon $updated_at
  * @property Carbon $deleted_at
@@ -52,6 +53,7 @@ class Agent extends BaseModel
      * @var array
      */
     protected $casts = [
+        'domains' => 'array',
         'created_at' => 'datetime:Y-m-d H:i:s',
         'updated_at' => 'datetime:Y-m-d H:i:s',
         'deleted_at' => 'datetime:Y-m-d H:i:s',
@@ -83,5 +85,6 @@ class Agent extends BaseModel
         'wallet_address_img', //
         'wallet_address', //
         'client_url', //
+        'domains', //
     ];
 }
