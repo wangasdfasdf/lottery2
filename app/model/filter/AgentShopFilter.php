@@ -311,12 +311,12 @@ class AgentShopFilter extends QueryFilter
     /**
      * 过滤
      *
-     * @param $deletedAt
+     * @param $domain
      * @return mixed
      */
-    public function deletedAt($deletedAt)
+    public function domain($domain)
     {
-        return $this->builder->where('deleted_at', $deletedAt);
+        return $this->builder->where('domain', $domain);
     }
 
 
