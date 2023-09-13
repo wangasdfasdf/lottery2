@@ -53,6 +53,18 @@ class Tests extends Command
     {
         $ids = Agent::query()->where('client_url', '')->pluck('id');
 
+        foreach ($ids as $id) {
+            try {
+
+                Db::statement(<<<AAA
+ALTER TABLE `agent_shop_ticket_config_$id` 
+ADD COLUMN `ad_content2` json NULL COMMENT '广告内容2' AFTER `ad_content`;
+AAA
+                );
+            } catch (\Exception $exception){
+                $output->writeln($exception->getMessage());
+            }
+        }
 
 
         dd(1);
