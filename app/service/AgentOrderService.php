@@ -239,6 +239,12 @@ class AgentOrderService extends BaseService
         });
 
 
+        $todayModel = AgentOrder::query()->whereDate('created_at', now()->format("Y-m-d"))
+        ->when(!empty($shopId), function (Builder $query) use ($shopId) {
+            $query->whereIn('shop_id', $shopId);
+        });
+        $totalAmount2 = clone $todayModel;
+
         $model1 = clone $model;
         $model2 = clone $model;
         $model3 = clone $model;
@@ -254,6 +260,8 @@ class AgentOrderService extends BaseService
             'total_amount' => $totalAmount,
             'winning_num' => $winningNum,
             'winning_amount' => $winningAmount,
+            'today_num' => $todayModel->count(),
+            'today_amount' => $totalAmount2->sum('bet_amount'),
         ];
     }
 
