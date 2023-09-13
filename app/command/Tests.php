@@ -51,7 +51,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $ids = Agent::query()->where('client_url', '')->pluck('id');
+        $ids = Agent::query()->pluck('id');
 
         foreach ($ids as $id) {
             try {
