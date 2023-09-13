@@ -51,6 +51,7 @@ class AgentShopTicketConfig extends BaseModel
      */
     protected $casts = [
          'ad_content' => 'array',
+         'ad_content2' => 'array',
          'created_at' => 'datetime:Y-m-d H:i:s',
          'updated_at' => 'datetime:Y-m-d H:i:s',
          'deleted_at' => 'datetime:Y-m-d H:i:s',
