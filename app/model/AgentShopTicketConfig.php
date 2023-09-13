@@ -70,6 +70,7 @@ class AgentShopTicketConfig extends BaseModel
         'bottom_code', //地板编码
         'qr_code', //二维码
         'ad_content', //广告内容
+        'ad_content2', //广告内容
         'created_at', //
         'updated_at', //
         'deleted_at', //
@@ -90,6 +91,7 @@ CREATE TABLE `agent_shop_ticket_config_$id` (
   `bottom_code` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '地板编码',
   `qr_code` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT '二维码',
   `ad_content` json DEFAULT NULL COMMENT '广告内容',
+  `ad_content2` json DEFAULT NULL COMMENT '广告内容2',
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   `deleted_at` timestamp NULL DEFAULT NULL,
