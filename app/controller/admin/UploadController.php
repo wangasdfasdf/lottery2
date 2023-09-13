@@ -28,11 +28,16 @@ class UploadController extends Controller
             default => 'images',
         };
 
+
+
         $filePath = sprintf("%s/%s.%s", $directory, Str::random(40), $file->getUploadExtension());
 
-        $file->move(public_path($filePath));
+        OssService::instance()->uploadFile($filePath, $file->getRealPath());
 
-        $url = config('app.url') . '/' . $filePath;
+        $url = config('ali.oss.cname_domain') . '/' . $filePath;
+
+//        $file->move(public_path($filePath));
+
 
         return Response::success(compact('url'));
     }

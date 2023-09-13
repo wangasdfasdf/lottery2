@@ -32,10 +32,13 @@ class UploadController extends Controller
 
         $filePath = sprintf("%s/%s.%s", $directory, Str::random(40), $file->getUploadExtension());
 
+        OssService::instance()->uploadFile($filePath, $file->getRealPath());
 
-        $file->move(public_path($filePath));
+        $url = config('ali.oss.cname_domain') . '/' . $filePath;
 
-        $url = config('app.url') . '/' . $filePath;
+//        $file->move(public_path($filePath));
+//
+//        $url = config('app.url') . '/' . $filePath;
 
         return Response::success(compact('url'));
     }
