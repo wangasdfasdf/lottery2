@@ -38,7 +38,7 @@ class Task
             AgentWalletPaymentLogService::instance()->capture();
         });
 
-        new Crontab("0 30 11-22 * * *", function () {
+        new Crontab("0 30 11,12,13,14,15,16,17,18,19,20,21,22 * * *", function () {
             //获取竞彩历史数据
             LotteryJcService::instance()->history();
         });
