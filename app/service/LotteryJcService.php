@@ -68,14 +68,19 @@ class LotteryJcService extends BaseService
             return;
         }
 
-        $result = $client->get($url, ['query' => $param]);
+        try {
+            $result = $client->get($url, ['query' => $param]);
 
-        if ($result->getStatusCode() == 200) {
+            if ($result->getStatusCode() == 200) {
 
-            file_put_contents($path . $filename, (string)$result->getBody());
-        } else {
+                file_put_contents($path . $filename, (string)$result->getBody());
+            } else {
+                $this->putFile($url, $param, $name, $client);
+            }
+        } catch (\Exception $exception) {
             $this->putFile($url, $param, $name, $client);
         }
+
     }
 
     public function syncCancelLottery(): void
@@ -104,11 +109,11 @@ class LotteryJcService extends BaseService
         $matchResult = Arr::get($data, 'value.matchResult', []);
         foreach ($matchResult as $item) {
 
-            if ($item['sectionsNo999'] == '取消'){
+            if ($item['sectionsNo999'] == '取消') {
                 LotteryJcResult::query()->firstOrCreate([
                     'match_id' => $item['match_id'],
                     'type' => 'jczq',
-                ],[
+                ], [
                     'comp' => '',
                     'home' => $item['allHomeTeam'],
                     'away' => $item['allAwayTeam'],
