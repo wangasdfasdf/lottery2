@@ -175,7 +175,22 @@ const plsConfig = {
     category: "5",
     grf: "zux_dt_6",
     cate: '组选'
-  }
+  },
+  431: {
+    name: "组选2码全包",
+    type: "3",
+    category: "7",
+    grf: "zx_zhfs",
+    cate: '组选'
+  },
+  // ----直组混选---
+  430: {
+    name: "直组混选",
+    type: "4",
+    category: "4",
+    grf: 'zhx',
+    cate: '直组混选'
+  },
 }
 const bdConfig={
   dict_dcbf:[[{
@@ -464,7 +479,7 @@ const getCompetionHtml=(item,is_redeem)=>{
   const { resultHtml }= getMatchHtml(item)
   return `<h3><b>${item.pass_method}</b><b>${item.bet_multiplier}倍</b><b>合计 ${item.bet_amount}元</b></h3>${resultHtml}<p>(选项固定奖金额为每1元投注对应的奖金额)</p>
   <p>本票最高可能固定奖金:${fixMoney(item.highest_reward)}元</p>
-  <p>单倍注数:${item.bet_number}</p>`+(is_redeem?`<div class="exchange-box"><div class="exchange"><h5>已兑奖</h5><h6>${item.winning_status=='winning'?fixNum(item.wining_amount):'<i>0</i>元'}</h6></div></div>`:'')
+  <p>单倍注数:${item.bet_number}</p>`+(is_redeem?`<div class="exchange-box"><div class="exchange"><h5>已兑奖</h5><h6>${['winning','redeem'].includes(item.winning_status)?fixNum(item.wining_amount):'<i>0</i>元'}</h6></div></div>`:'')
 }
 // function generateRandomString(lens,letters,numbers,letterCount){
 //   let randomString = '';
@@ -565,10 +580,25 @@ const fixBbNums=(id)=>{
     return str
   }
 }
+function getRandomArrayIndex(array) {
+  // 生成一个随机索引
+  let randomIndex = Math.floor(Math.random() * array.length);
+  // 返回随机索引处的元素
+  return array[randomIndex] || '';
+}
 // 获取指定前缀指定位数的随机数
 const getRandomOrderNum=(end,prefix='')=>{
   const full=(parseInt(Math.random()*10e16).toString() + parseInt(Math.random()*10e16).toString())
   return (prefix+full).substring(0,end)
+}
+// 底部模块渲染
+const renderBottom=(form)=>{
+  return (form.printType==2?`<thanks_tax>感谢您为公益事业贡献 ${form.tax}元</thanks_tax>
+  <ads_1>${getRandomArrayIndex(form.ads1)}</ads_1>
+  <address>${form.address}</address>`:
+  form.printType==3?`<ads_2>${getRandomArrayIndex(form.ads2)}</ads_2>`:
+  `<thanks_tax>感谢您为公益事业贡献 ${form.tax}元</thanks_tax>
+  <address>${form.address}</address>`) + '<barcode></barcode>'
 }
 const printContent = (item,print_conf) => {
   item.bet_info = item.bet_info||[];
@@ -583,8 +613,9 @@ const printContent = (item,print_conf) => {
     content_arr:resultArr.concat(['(选项固定奖金额为每1元投注对应的奖金额)',`本票最高可能固定奖金:${fixMoney(item.highest_reward)}元`,
     `单倍注数:${item.bet_number}`]),
     code:print_conf.bottom_code,//底部编号
-    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
-    ads:print_conf.ad_content||[],
+    printType:print_conf.print_type,//打印类型 1 地址版 2 广告版一 3 广告版二
+    ads1:print_conf.ad_content||[],
+    ads2:print_conf.ad_content2||[],
     tax:fixTax(item.bet_amount,0.21),
     address:print_conf.address,//店铺地址
     // isShort:item.pass_method.indexOf("单场固定")>-1&&item.bet_info.length<2 &&zsNum<=3 //是否是短票
@@ -594,6 +625,8 @@ const printContent = (item,print_conf) => {
 
 const printPlsContent=(item,print_conf)=>{
   let grf_suffix=''; //用于其他特殊情况追加grf文件后缀
+  let grf_name=plsConfig[item.pass_method]?plsConfig[item.pass_method].grf:''
+  let pass_method_name =`${(plsConfig[item.pass_method]?plsConfig[item.pass_method].name:'')}票`
   const print_order_no = item.print_order_no.split(",")
   const last_no = print_order_no.pop()
   let contentXml=''
@@ -602,6 +635,17 @@ const printPlsContent=(item,print_conf)=>{
       let offset={1:2,2:1,3:1,4:1,5:0,6:2,7:2,8:1,9:1,10:0}[item.bet_info.length];
       item.bet_info.forEach((v,i)=>{
         contentXml+=`<content_${i+1+offset}>${item.bet_info.length>1?(String.fromCharCode(65 + i)+' '):''}${v.content.join("  ")}</content_${i+1+offset}>`
+      })
+      //超过5张用加长版
+      grf_suffix=item.bet_info.length>5?'_l':''
+  }if(['430'].includes(item.pass_method)){
+      // 直组混选
+      let offset={1:2,2:1,3:1,4:1,5:0,6:2,7:2,8:1,9:1,10:0}[item.bet_info.length];
+      item.bet_info.forEach((v,i)=>{
+        const k=i+1+offset;
+        contentXml+=`<content_${k}>${item.bet_info.length>1?(String.fromCharCode(65 + i)+' '):''}${v.content.join("  ")}</content_${k}>`+
+        `<type_${k}>${v.type}</type_${k}>`+
+        `<multiple_${k}>${v.bet_multiplier}倍</multiple_${k}>`
       })
       //超过5张用加长版
       grf_suffix=item.bet_info.length>5?'_l':''
@@ -625,7 +669,17 @@ const printPlsContent=(item,print_conf)=>{
     // 组合复式
     item.bet_info.forEach((v)=>{
       contentXml+=`<content_txt>${v.content.split(",").join("  ")}</content_txt>`
+      grf_suffix=v.content.split(",").length>8?'_2':''
     })
+    if(item.detail && item.detail.category==9){
+       //三同
+      pass_method_name = '直选组合三同票'
+    } else if(item.detail && item.detail.category==8){
+      // 二同
+      pass_method_name = '直选组合二同票'
+    }else{
+      pass_method_name = '直选组合三不同票'
+    }
   }else if(['424','425','419','420'].includes(item.pass_method)){
     // 组合复式 超过8个换行
     item.bet_info.forEach((v)=>{
@@ -641,29 +695,52 @@ const printPlsContent=(item,print_conf)=>{
     })
   }else if(['429','423','427'].includes(item.pass_method)){
     // 胆拖
-     let maxLens=0;
+    let maxLens=0;
+    let oneLineMax=7;
+    let tuoma2Arr=[]; //拖码第二行，拖码超过7个数字则需要两行，使用另外一个模板 //胆码最多2个，所以不会超出
     item.bet_info.forEach(v=>{
       v.xml_key=v.name=='胆码'?'dan_ma':'tuo_ma'
       v.content_arr = v.content.split(",")
       maxLens=Math.max(maxLens,v.content_arr.length)
+      if(v.xml_key=='tuo_ma'&& v.content_arr.length>oneLineMax) tuoma2Arr=v.content_arr.splice(oneLineMax)
     })
+    if(tuoma2Arr.length){
+      item.bet_info.forEach((v)=>{
+        if(v.xml_key=='dan_ma'){
+          let offset = new Array(oneLineMax-v.content_arr.length).fill("!")
+          contentXml+=`<${v.xml_key}>${v.content_arr.concat(offset).join("  ")}</${v.xml_key}>`
+        }else{
+          contentXml+=`<${v.xml_key}>${v.content_arr.join("  ")}</${v.xml_key}>`
+          contentXml+=`<tuo_ma_2>${tuoma2Arr.join("  ")}</tuo_ma_2>`
+        }
+      })
+      grf_name = 'zhdt'      // 使用另外一个模板
+    }else{
+      item.bet_info.forEach((v)=>{
+        let offset = new Array(maxLens-v.content_arr.length).fill("!")
+        contentXml+=`<${v.xml_key}>${v.content_arr.concat(offset).join("  ")}</${v.xml_key}>`
+      })
+    }
+  }else if(['431'].includes(item.pass_method)){
+    // 两码全包
     item.bet_info.forEach((v)=>{
-      let offset = new Array(maxLens-v.content_arr.length).fill("!")
-      contentXml+=`<${v.xml_key}>${v.content_arr.concat(offset).join("  ")}</${v.xml_key}>`
+      contentXml+=`<content_txt>${v.content.split(",").join("  ")}</content_txt>`
+      grf_suffix=v.content.split(",").length>8?'_2':''
     })
+    
   }
   return {
     contentXml,
     grf_suffix, //grf后缀
-    grf:plsConfig[item.pass_method]?plsConfig[item.pass_method].grf:'',
-    pass_method_name:`${(plsConfig[item.pass_method]?plsConfig[item.pass_method].name:'')}票`,
+    grf:grf_name, //grf文件名称
+    pass_method_name,
     number: print_order_no.join(" ")+'  '+last_no,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
     open_time:dayjs(item.plan_end_time).format('YYYY年MM月DD日')+'开奖',
     code:print_conf.bottom_code,//底部编号
-    code_num:'0007',
-    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
-    ads:print_conf.ad_content||[],
+    printType:print_conf.print_type,//打印类型 1 地址版 2 广告版一 3 广告版二
+    ads1:print_conf.ad_content||[],
+    ads2:print_conf.ad_content2||[],
     tax:fixTax(item.bet_amount,0.34),
     address:print_conf.address,//店铺地址
   }
@@ -692,7 +769,7 @@ const printBdContent=(item,print_conf)=>{
       bdConfig[`dict_${item.detail.pass_type}`].forEach(d=>{
          odds.push(chooseKey.includes(d.key)?d.value:"--")
       })
-      contentRight.push(`${odds.join(" ")}${(v.handicap>0 || v.handicap<0)?` [${v.handicap<0?'-':'+'} ${Math.abs(v.handicap)}球]`:''}`)
+      contentRight.push(`${odds.join(" ")}${(v.handicap>0 || v.handicap<0)?` [${v.handicap<0?'-':'+'} ${Math.abs(v.handicap)}${v.unit||'球'}]`:''}`)
     })
   }else if(item.detail.pass_type=='sxp'){
     item.bet_info.forEach(v=>{
@@ -745,9 +822,9 @@ const printBdContent=(item,print_conf)=>{
     number: print_order_no.join(" ")+'  '+last_no,
     time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
     code:print_conf.bottom_code,//底部编号
-    code_num:'00088',
-    printType:print_conf.print_type,//打印类型 1 广告版 2 地址版
-    ads:print_conf.ad_content||[],
+    printType:print_conf.print_type,//打印类型 1 地址版 2 广告版一 3 广告版二
+    ads1:print_conf.ad_content||[],
+    ads2:print_conf.ad_content2||[],
     tax:fixTax(item.bet_amount,0.22),
     address:print_conf.address,//店铺地址
   }
@@ -755,9 +832,9 @@ const printBdContent=(item,print_conf)=>{
 // 拼接content数据 --- end ----
 
 function fillPassType (pass_method, bet_multiplier, bet_amount, fixBlank = 0) {
-  // 汉字 20 数字,逗号，空格34 fixBlank:修正左侧偏移
+  // 汉字 20 数字,逗号，空格34 fixBlank:修正左侧偏移 左移<0  右移>0
   const spaceNum = 340 - getLens(pass_method) - getLens(bet_multiplier) - getLens(bet_amount)
-  return `${pass_method}${new Array(fixBlank).fill(" ").join('')}${new Array(Math.ceil(spaceNum / 20) + 2).fill(" ").join('')}${bet_multiplier}`
+  return `${pass_method}${fixBlank>0? new Array(fixBlank).fill(" ").join(''):''}${new Array(Math.ceil(spaceNum / 20) + 2 +(fixBlank<0?fixBlank:0)).fill(" ").join('')}${bet_multiplier}`
 }
 function getLens (str) {
   // 一个汉字=1.7个数字
@@ -770,7 +847,8 @@ const printWidth=79.0
 function printPls ({ form, params, data }) {
  const report = urlAddRandomNo("./grwebapp/pls/" + form.grf + (form.grf_suffix||'')+".grf")
  const height = 101.0
-  let pass_method = fillPassType(form.pass_method_name, `${params.bet_multiplier}倍`, `合计 ${params.bet_amount}元`, 2)
+  let pass_method = params.pass_method==430?form.pass_method_name:fillPassType(form.pass_method_name, `${params.bet_multiplier}倍`, `合计 ${params.bet_amount}元`, 2)
+  // 直组混选标题部分没有倍数
   return  renderGrfData(
       `<report>
       <_grparam>
@@ -781,11 +859,10 @@ function printPls ({ form, params, data }) {
       <pass_type>${pass_method}</pass_type>
       <amount>${params.bet_amount}</amount>
       <time>${form.time}</time>
-      <tax>${form.tax}</tax>
       ${form.contentXml}
       <code>${form.code}</code>
       <code_num>${params.serial_number}</code_num>
-      <address>${form.address}</address>
+      ${renderBottom(form)}
       ${data.exchange_money ? `<exchange_title>已兑奖</exchange_title><exchange_money>${data.exchange_money}</exchange_money>` : ''}
       </_grparam>
       </report>`, `${data.exchange_money ? '' : 'Report.ControlByName("kuang").Visible = false;'}Report.Utility.TextWrapByWord = false;`, {report,height,width:printWidth})
@@ -796,7 +873,7 @@ function printBjdc ({ form, params, data }) {
   let grfName = 'bd' + params.detail.pass_type
   const pass_method_arr=params.pass_method.split(",");
   if (params.detail.pass_type == "spf" || params.detail.pass_type == "sf" || params.detail.pass_type == "sxp" || params.detail.pass_type == "zjq") {
-    if (pass_method_arr.length > 3) {
+    if (pass_method_arr.length >= 3) {
       //特殊 <=5场为短票
       grfName += (params.bet_info.length <= 5) ? '_d' : '_c' //长短
       grfName += '_s'
@@ -811,11 +888,11 @@ function printBjdc ({ form, params, data }) {
     if (grfName.indexOf("_d") > -1) height = 101.0 //短票设置高度
   } else if (params.detail.pass_type == "bqc") {
     grfName += (params.bet_info.length <= 3 && pass_method_arr.length <= 2) ? '_d' : '_c' //长短
-    if (pass_method_arr.length > 3) grfName += '_s' // 特殊
+    if (pass_method_arr.length >= 3) grfName += '_s' // 特殊
     if (grfName.indexOf("_d") > -1) height = 101.0 //短票设置高度
   } else if (params.detail.pass_type == "dcbf") {
     grfName += (params.bet_info.length <= 1) ? '_d' : '_c' //长短
-    if (pass_method_arr.length > 3) grfName += '_s' // 特殊
+    if (pass_method_arr.length >= 3) grfName += '_s' // 特殊
     if ((params.bet_info.length > 7) && grfName.indexOf("_s") > -1) { //超长特殊
       grfName += '_l'
     } else if (params.bet_info.length > 8) { //超长
@@ -855,15 +932,13 @@ function printBjdc ({ form, params, data }) {
       ${pass_method_2}
       <amount>${params.bet_amount}</amount>
       <time>${form.time}</time>
-      <tax>${form.tax}</tax>
       ${form.contentXml}
       <code>${form.code}</code>
       <code_num>${params.serial_number}</code_num>
-      <address>${form.address}</address>
+      ${renderBottom(form)}
       ${data.exchange_money ? `<exchange_title>已兑奖</exchange_title><exchange_money>${data.exchange_money}</exchange_money>` : ''}
       </_grparam>
       </report>`, `${data.exchange_money ? '' : 'Report.ControlByName("kuang").Visible = false;'}Report.Utility.TextWrapByWord = false;`,{width:printWidth,height,report})
-  // printType:userInfo.print_type,//打印类型 1 广告版 2 地址版
 }
 // 竞猜逻辑
 function printCompetion ({ form, params, data, dom_height }) {
@@ -878,7 +953,7 @@ function printCompetion ({ form, params, data, dom_height }) {
   }
   let bet_amount = `合计 ${params.bet_amount}元`
   let bet_multiplier = `${params.bet_multiplier}倍`
-  let pass_method = fillPassType(params.pass_method, bet_multiplier, bet_amount)
+  let pass_method = fillPassType(params.pass_method, bet_multiplier, bet_amount, -1)
   return  renderGrfData(
       `<report>
       <_grparam>
@@ -888,10 +963,9 @@ function printCompetion ({ form, params, data, dom_height }) {
       <multiple></multiple>
       <amount>${bet_amount}</amount>
       <time>${form.time}</time>
-      <tax>${form.tax}</tax>
       <content_txt>${form.content_arr.join("\n")}</content_txt>
       <code>${form.code}</code>
-      <address>${form.address}</address>
+      ${renderBottom(form)}
       ${data.exchange_money ? `<exchange_title>已兑奖</exchange_title><exchange_money>${data.exchange_money}</exchange_money>` : ''}
       </_grparam>
       </report>`,`${data.exchange_money ? '' : 'Report.ControlByName("kuang").Visible = false;'}Report.Utility.TextWrapByWord = false;`, {report,height,width:printWidth})
@@ -948,9 +1022,9 @@ function combineOrderNo(print_order_no,order_prefix){
  * @param {String} print_conf 用户打印配置 {print_type,order_prefix,address,bottom_code,ad_content}
  */
 function renderData({params,print_conf,dom_height,is_redeem}){
-  const data=is_redeem>0?{exchange_money:params.winning_status=='winning'?fixNum(params.wining_amount):'0元'}:{}
+  const data=is_redeem>0?{exchange_money:['winning','redeem'].includes(params.winning_status)?fixNum(params.wining_amount):'0元'}:{}
   const _print_conf={
-    print_type:1,order_prefix:'',address:'',bottom_code:'11-056988-101',ad_content:['传统足彩2.6亿大派奖火热进行中！'],
+    print_type:1,order_prefix:'',address:'',bottom_code:'11-056988-101',ad_content:[],ad_content2:[],
     ...print_conf?print_conf:{}
   }
   if(is_redeem=='2'){
