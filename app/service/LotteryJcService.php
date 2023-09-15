@@ -8,6 +8,8 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Lottery;
+use support\Log;
 use function DI\string;
 
 class LotteryJcService extends BaseService
@@ -78,6 +80,7 @@ class LotteryJcService extends BaseService
                 $this->putFile($url, $param, $name, $client);
             }
         } catch (\Exception $exception) {
+            Log::info(__METHOD__, [$exception->getMessage()]);
             $this->putFile($url, $param, $name, $client);
         }
 
