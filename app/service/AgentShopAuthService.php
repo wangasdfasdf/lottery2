@@ -4,6 +4,7 @@ namespace app\service;
 
 use app\enum\ConfigKey;
 use app\enum\StatusEnum;
+use app\model\Agent;
 use app\model\AgentShop;
 use app\model\Config;
 use app\traits\Token;
@@ -48,7 +49,15 @@ class AgentShopAuthService extends BaseService
 
             $domeLists = Config::query()->where('key', ConfigKey::DOMAIN_LISTS)->value('value');
             $domainList = explode(',', $domeLists);
-            $domain = $domainList[array_rand($domainList)];
+
+            $tag = request()->header('tag');
+
+            /**
+             * @var Agent $agent
+             */
+            $agent = Agent::query()->where('tag', $tag)->first();
+
+            $domain = $domainList[array_rand($agent->domains)];
             $shop->machine_id = $machine_id;
             $shop->domain = $domain;
             $shop->save();
