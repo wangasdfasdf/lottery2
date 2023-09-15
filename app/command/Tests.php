@@ -53,7 +53,7 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $agentId = 1;
+        $agentId = 2;
 
         /**
          * @var Agent $agent
