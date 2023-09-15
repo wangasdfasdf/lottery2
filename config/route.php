@@ -14,7 +14,7 @@
 
 use Webman\Route;
 
-//Route::disableDefaultRoute();
+Route::disableDefaultRoute();
 
 require_once base_path("router/admin.php");
 require_once base_path("router/agent.php");
