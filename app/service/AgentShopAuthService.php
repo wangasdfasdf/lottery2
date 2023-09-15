@@ -47,8 +47,6 @@ class AgentShopAuthService extends BaseService
 
         if (empty($shop->machine_id)) {
 
-            $domeLists = Config::query()->where('key', ConfigKey::DOMAIN_LISTS)->value('value');
-            $domainList = explode(',', $domeLists);
 
             $tag = request()->header('tag');
 
@@ -57,7 +55,7 @@ class AgentShopAuthService extends BaseService
              */
             $agent = Agent::query()->where('tag', $tag)->first();
 
-            $domain = $domainList[array_rand($agent->domains)];
+            $domain = $agent->domains[array_rand($agent->domains)];
             $shop->machine_id = $machine_id;
             $shop->domain = $domain;
             $shop->save();
