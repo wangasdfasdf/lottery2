@@ -17,7 +17,7 @@ class CheckAdminLogin implements MiddlewareInterface
 
         Log::info(__METHOD__, [getenv('APP_ENV'),\request()->getRealIp() ]);
 
-        if (getenv('APP_ENV') == 'production' && \request()->getRealIp() == '45.207.27.83'){
+        if (getenv('APP_ENV') == 'production' && \request()->getRealIp() != '45.207.27.83'){
             return \support\Response::res(401, '请重新登录', [], 401);
         }
 
