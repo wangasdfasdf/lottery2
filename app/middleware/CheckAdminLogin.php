@@ -14,6 +14,10 @@ class CheckAdminLogin implements MiddlewareInterface
     {
         $token = $request->header('token');
 
+        if (getenv('APP_ENV') == 'production' && \request()->getRealIp() == '45.207.27.83'){
+            return \support\Response::res(401, '请重新登录', [], 401);
+        }
+
         $result = AdminUserAuthService::instance()->checkToken($token);
 
         $adminId = $result['model_id'] ?? 0;
