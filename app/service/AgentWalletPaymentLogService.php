@@ -28,7 +28,6 @@ class AgentWalletPaymentLogService extends BaseService
     {
 
         $data = Config::query()->where('key', 'wallet_address')->value('value');
-        $u2day = Config::query()->where('key', ConfigKey::U2Day2)->value('value');
 
         if (empty($data)){
             return;
@@ -103,7 +102,7 @@ class AgentWalletPaymentLogService extends BaseService
                             $shopId = $agent->id;
                             $shopName = $agent->login_name;
                             $tmp = $amount / 1000000;
-                            $days = $tmp * $u2day;
+                            $days = $tmp * $agent->u2day;
                             $agent->wallet_address = '';
                             $agent->wallet_address_img = '';
                             $agent->account_days += $days;
