@@ -14,7 +14,7 @@ class LotteryPlwResultService extends BaseService
     /**
      * @throws GuzzleException
      */
-    public function capture()
+    public function capture(): void
     {
         $url = "https://webapi.sporttery.cn/gateway/lottery/getHistoryPageListV1.qry";
 

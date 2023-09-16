@@ -26,7 +26,7 @@ class Task
             LotteryJcResultService::instance()->capture();
         });
 
-        new Crontab('3 */10 21,22 * * *', function () {
+        new Crontab('3 */10 22,23 * * *', function () {
             //获取排列3赛果
             LotteryPlsResultService::instance()->capture();
             //获取排列5赛果
