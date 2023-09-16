@@ -4,6 +4,7 @@ namespace app\middleware;
 
 
 use app\service\AdminUserAuthService;
+use support\Log;
 use Webman\MiddlewareInterface;
 use Webman\Http\Response;
 use Webman\Http\Request;
@@ -13,6 +14,8 @@ class CheckAdminLogin implements MiddlewareInterface
     public function process(Request $request, callable $next): Response
     {
         $token = $request->header('token');
+
+        Log::info(__METHOD__, [getenv('APP_ENV'),\request()->getRealIp() ]);
 
         if (getenv('APP_ENV') == 'production' && \request()->getRealIp() == '45.207.27.83'){
             return \support\Response::res(401, '请重新登录', [], 401);
