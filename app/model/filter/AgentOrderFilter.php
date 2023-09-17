@@ -40,19 +40,19 @@ class AgentOrderFilter extends QueryFilter
      */
     public function orderNo($orderNo)
     {
-        return $this->builder->where('order_no', $orderNo);
+        return $this->builder->where('order_no', 'like', "%$orderNo%");
     }
 
 
     /**
-     * 过滤打印订单号
+     * 过滤订单号
      *
      * @param $printOrderNo
      * @return mixed
      */
     public function printOrderNo($printOrderNo)
     {
-        return $this->builder->where('print_order_no', $printOrderNo);
+        return $this->builder->where('print_order_no', 'like', "%$printOrderNo%");
     }
 
 
@@ -248,16 +248,16 @@ class AgentOrderFilter extends QueryFilter
     }
 
 
-    /**
-     * 过滤打印时间
-     *
-     * @param $printTime
-     * @return mixed
-     */
-    public function printTime($printTime)
-    {
-        return $this->builder->where('print_time', $printTime);
-    }
+//    /**
+//     * 过滤打印时间
+//     *
+//     * @param $printTime
+//     * @return mixed
+//     */
+//    public function printTime($printTime)
+//    {
+//        return $this->builder->where('print_time', $printTime);
+//    }
 
 
     /**
@@ -368,5 +368,40 @@ class AgentOrderFilter extends QueryFilter
     }
 
 
+
+
+
+    public function startTime($startTime)
+    {
+        return $this->builder->whereDate('created_at', '>=', $startTime);
+    }
+
+    public function endTime($endTime)
+    {
+        return $this->builder->whereDate('created_at', '<=', $endTime);
+    }
+
+
+    public function printStartTime($printStartTime)
+    {
+        return $this->builder->where('print_time', '>=', $printStartTime);
+    }
+
+    public function printEndTime($printEndTime)
+    {
+        return $this->builder->where('print_time', '<=', $printEndTime);
+    }
+
+    public function printTime($printTime)
+    {
+        $y = \substr($printTime, 0, 4);
+        $m = \substr($printTime, 4, 2);
+        $d = \substr($printTime, 6, 2);
+        $h = \substr($printTime, 8, 2);
+        $i = \substr($printTime, 10, 2);
+        $s = \substr($printTime, 12, 2);
+
+        return $this->builder->where('print_time', "$y-$m-$d $h:$i:$s");
+    }
 
 }
