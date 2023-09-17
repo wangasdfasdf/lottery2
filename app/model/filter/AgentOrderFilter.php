@@ -402,8 +402,12 @@ class AgentOrderFilter extends QueryFilter
         $i = \substr($printTime, 10, 2);
         $s = \substr($printTime, 12, 2);
 
-        Log::info(__METHOD__, [ "$y-$m-$d $h:$i:$s"]);
-        return $this->builder->where('print_time', "$y-$m-$d $h:$i:$s");
+
+        $printTime = strtr($printTime, [
+           "+" => ' ',
+        ]);
+
+        return $this->builder->where('print_time', $printTime);
     }
 
 }
