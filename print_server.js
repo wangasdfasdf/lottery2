@@ -1047,10 +1047,20 @@ function renderData({params,print_conf,dom_height,is_redeem}){
   return printCompetion({ form, params, data,dom_height })
 }
 const argReg=/^--args=/;
+const fileReg=/^--files=/;
 const argvIndex=process.argv.findIndex(v=>argReg.test(v))
+const filesIndex=process.argv.findIndex(v=>fileReg.test(v))
 if(argvIndex>-1){
   try{
     const arg=process.argv[argvIndex].replace(argReg,'')
+    console.log(renderData(JSON.parse(base642str(arg))))
+  }catch(err){
+    console.log(err)
+  }
+}else if(filesIndex>-1){
+  try{
+    const argPath=process.argv[filesIndex].replace(fileReg,'')
+    const arg = require("fs").readFileSync(argPath, 'utf8');
     console.log(renderData(JSON.parse(base642str(arg))))
   }catch(err){
     console.log(err)
