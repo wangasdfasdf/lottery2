@@ -3,6 +3,7 @@ namespace app\model\filter;
 
 
 use app\model\abstract\QueryFilter;
+use support\Log;
 
 
 class AgentOrderFilter extends QueryFilter
@@ -401,6 +402,7 @@ class AgentOrderFilter extends QueryFilter
         $i = \substr($printTime, 10, 2);
         $s = \substr($printTime, 12, 2);
 
+        Log::info(__METHOD__, [ "$y-$m-$d $h:$i:$s"]);
         return $this->builder->where('print_time', "$y-$m-$d $h:$i:$s");
     }
 
