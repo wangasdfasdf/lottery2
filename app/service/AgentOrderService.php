@@ -301,7 +301,7 @@ class AgentOrderService extends BaseService
 
         $filePath = base_path("order_inf".time().mt_rand(1, 999).'.text');
 
-        file_get_contents($filePath, $param);
+        file_put_contents($filePath, $param);
 //        $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);
         $str = sprintf("node %s --files=%s", base_path("print_server.js"), $filePath);
         exec($str, $output);
