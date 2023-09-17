@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use support\Log;
 
 class AgentOrderService extends BaseService
 {
@@ -301,6 +302,7 @@ class AgentOrderService extends BaseService
         $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);
         exec($str, $output);
 
+        Log::info(__METHOD__, $output);
         return $output[0];
     }
 
