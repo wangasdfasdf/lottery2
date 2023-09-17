@@ -54,9 +54,12 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-      dd( passwordHash('Udb,edm.hame1987'));
-
-        dd(1);
+        //获取北单赛果
+        LotteryBdResultService::instance()->capture();
+        //获取北单胜负赛果
+        LotteryBdSfResultService::instance()->capture();
+        //获取竞彩赛果
+        LotteryJcResultService::instance()->capture();
         return self::SUCCESS;
     }
 
