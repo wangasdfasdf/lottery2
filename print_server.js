@@ -820,7 +820,7 @@ const printBdContent=(item,print_conf)=>{
   return {
     contentXml:`<content_txt>${content.join("\n")}</content_txt><content_right>${contentRight.join("\n")}</content_right>`,
     number: print_order_no.join(" ")+'  '+last_no,
-    time: dayjs(item.print_time||new Date()).format('YY/MM/DD HH:mm:ss') ,
+    time: dayjs(item.print_time||new Date()).format('YYYY-MM-DD HH:mm:ss'),
     code:print_conf.bottom_code,//底部编号
     printType:print_conf.print_type,//打印类型 1 地址版 2 广告版一 3 广告版二
     ads1:print_conf.ad_content||[],
