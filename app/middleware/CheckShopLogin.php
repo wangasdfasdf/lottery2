@@ -5,6 +5,7 @@ namespace app\middleware;
 use app\middleware\traits\SetSuffix;
 use app\model\AgentShop;
 use app\service\AgentShopAuthService;
+use support\Log;
 use Webman\MiddlewareInterface;
 use Webman\Http\Response;
 use Webman\Http\Request;
@@ -35,6 +36,8 @@ class CheckShopLogin implements MiddlewareInterface
          * @var AgentShop $shop
          */
         $shop = AgentShop::query()->find($agent_shop_id);
+
+        Log::info(__METHOD__ , compact('agent_shop_id', 'shop'));
 
         if ($shop->expiry_time < now()){
             return \support\Response::res(401, '店铺已过期', [], 401);
