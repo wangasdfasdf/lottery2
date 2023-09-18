@@ -15,6 +15,7 @@ use app\controller\shop\LotteryController;
 use app\controller\shop\ShopLinkController;
 use app\controller\shop\UploadController;
 use app\controller\shop\VersionController;
+use app\middleware\CheckShopExpiry;
 use app\middleware\CheckShopLogin;
 use app\middleware\CheckShopRsaLogin;
 use app\middleware\CheckShopTag;
@@ -87,6 +88,7 @@ Route::group("/shop/v1/", function () {
 
     })->middleware([
         CheckShopLogin::class,
+        CheckShopExpiry::class
     ]);
 
 
