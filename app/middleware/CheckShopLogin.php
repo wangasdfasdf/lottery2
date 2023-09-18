@@ -37,8 +37,6 @@ class CheckShopLogin implements MiddlewareInterface
          */
         $shop = AgentShop::query()->where('id', $agent_shop_id)->first();
 
-        Log::info(__METHOD__, ['shop' => $shop, $shop->expiry_time ,  now(), $shop->expiry_time < now()]);
-
         if ($shop && $shop->expiry_time < now()) {
             return \support\Response::res(3000, '账号已过期,请联系管理员', $shop->only('id','month_money','month2_money', 'half_year_money', 'year_money','quarter_money', 'wallet_address', 'wallet_address_img'), 200);
 
