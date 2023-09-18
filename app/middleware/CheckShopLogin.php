@@ -37,9 +37,7 @@ class CheckShopLogin implements MiddlewareInterface
          */
         $shop = AgentShop::query()->find($agent_shop_id);
 
-        Log::info(__METHOD__ , compact('agent_shop_id', 'shop'));
-
-        if ($shop->expiry_time < now()){
+        if ($shop && $shop->expiry_time < now()){
             return \support\Response::res(401, '店铺已过期', [], 401);
         }
 

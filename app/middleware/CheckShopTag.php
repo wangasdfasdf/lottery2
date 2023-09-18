@@ -43,8 +43,6 @@ class CheckShopTag implements MiddlewareInterface
 
         $this->setSuffix($agent_id);
 
-        Log::info(__METHOD__, compact('agent_id'));
-
         \request()->offSet('machine_id', $machine_id);
 
         return $next($request);
