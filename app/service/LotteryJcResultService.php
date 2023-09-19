@@ -3,6 +3,7 @@ namespace app\service;
 
 use app\model\LotteryJcResult;
 use GuzzleHttp\Client;
+use support\Log;
 
 class LotteryJcResultService extends BaseService
 {
@@ -29,6 +30,8 @@ class LotteryJcResultService extends BaseService
         }
 
         $data = $body['data'];
+
+        Log::info(__METHOD__, $data);
 
         $jczq = $data['jczq'];
 
