@@ -31,8 +31,6 @@ class LotteryJcResultService extends BaseService
 
         $data = $body['data'];
 
-        Log::info(__METHOD__, $data);
-
         $jczq = $data['jczq'];
 
         foreach ($jczq as $item) {
