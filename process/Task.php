@@ -11,6 +11,7 @@ use app\service\LotteryJcResultService;
 use app\service\LotteryJcService;
 use app\service\LotteryPlsResultService;
 use app\service\LotteryPlwResultService;
+use support\Log;
 use Workerman\Crontab\Crontab;
 
 class Task
@@ -20,10 +21,13 @@ class Task
         new Crontab('0 */10 * * * *', function () {
             //获取北单赛果
             LotteryBdResultService::instance()->capture();
+            Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
             //获取北单胜负赛果
             LotteryBdSfResultService::instance()->capture();
+            Log::info("LotteryBdSfResultService", ['time' => now()->format('Y-m-d H:i:s')]);
             //获取竞彩赛果
             LotteryJcResultService::instance()->capture();
+            Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
         });
 
         new Crontab('3 */10 22,23 * * *', function () {
