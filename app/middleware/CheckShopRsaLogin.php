@@ -19,13 +19,13 @@ class CheckShopRsaLogin implements MiddlewareInterface
 
         $arr = RasService::instance()->privateDecode($str);
 
-//        if (!$arr) {
-//            return \support\Response::res(401, '操作失败', [], 401);
-//        }
+        if (!$arr) {
+            return \support\Response::res(401, '操作失败', [], 401);
+        }
 
-//        if ($arr['client'] != 'contest.exe' || $arr['timestamp'] + 30 < time()) {
-//            return \support\Response::res(401, '请调整本地时间', [], 401);
-//        }
+        if ($arr['client'] != 'contest.exe' || $arr['timestamp'] + 30 < time()) {
+            return \support\Response::res(401, '请调整本地时间', [], 401);
+        }
 
         return $next($request);
     }
