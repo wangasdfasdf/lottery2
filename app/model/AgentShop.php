@@ -114,12 +114,15 @@ class AgentShop extends BaseModel
 
     ];
 
-    //往期篮球
+    //往期篮球  1
     const ROLE_HISTORY_BASKETBALL = 1 << 0;
-    //往期足球
+    //往期足球  2
     const ROLE_HISTORY_FOOTBALL = 1 << 1;
-    //往期北单
+    //往期北单  4
     const ROLE_HISTORY_BJDC = 1 << 2;
+    //往期   8
+    const ROLE_HISTORY_PLS = 1 << 2;
+
 
     //本期北单
     const ROLE_CURRENT_BJDC = 1 << 0;
