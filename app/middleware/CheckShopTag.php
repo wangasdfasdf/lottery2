@@ -24,8 +24,7 @@ class CheckShopTag implements MiddlewareInterface
         $tag = $request->header('tag');
         $machine_id = $request->header('machineId');
 
-
-        if (empty($machine_id)) {
+        if ( empty($machine_id)) {
             return \support\Response::res(401, '设备码错误', [], 401);
         }
 

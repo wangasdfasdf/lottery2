@@ -3,6 +3,8 @@
 namespace app\controller\shop;
 
 use app\controller\Controller;
+use app\model\LotteryPlsResult;
+use app\service\LotteryPlsResultService;
 use support\Request;
 use support\Response;
 
@@ -43,5 +45,12 @@ class HistoryMatchController extends Controller
 
 
         return Response::success(\compact('days', 'hour'));
+    }
+
+    public function historyPlsIssue(): Response
+    {
+        $data = LotteryPlsResultService::instance()->last20();
+
+        return Response::success($data);
     }
 }

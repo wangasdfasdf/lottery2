@@ -4,6 +4,7 @@ namespace app\service;
 
 use app\model\LotteryPlsResult;
 use GuzzleHttp\Client;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Arr;
 
 class LotteryPlsResultService extends BaseService
@@ -39,7 +40,7 @@ class LotteryPlsResultService extends BaseService
 
             $prizeLevelList = \array_column($item['prizeLevelList'], 'stakeAmount', 'prizeLevel');
 
-            if (empty($prizeLevelList)){
+            if (empty($prizeLevelList)) {
                 continue;
             }
 
@@ -62,5 +63,15 @@ class LotteryPlsResultService extends BaseService
                 },
             ]);
         }
+    }
+
+    /**
+     * 排列三 往期单号
+     *
+     * @return Collection|array
+     */
+    public function last20(): Collection|array
+    {
+       return LotteryPlsResult::query()->selectRaw("issue, DATE_FORMAT(created_at, '%Y-%m-%d') as day")->orderBy('id', 'desc')->limit(20)->get();
     }
 }

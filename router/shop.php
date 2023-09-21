@@ -64,6 +64,7 @@ Route::group("/shop/v1/", function () {
         //历史数据
         Route::get('history/match/{path}', [HistoryMatchController::class, 'show']);
         Route::get('history/day', [HistoryMatchController::class, 'day']);
+        Route::get('history/pls/issue', [HistoryMatchController::class, 'historyPlsIssue']);
 
         //广告
         Route::get("ad", [AdController::class, 'index']);
