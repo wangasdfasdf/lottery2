@@ -72,6 +72,13 @@ class LotteryPlsResultService extends BaseService
      */
     public function last20(): Collection|array
     {
-       return LotteryPlsResult::query()->selectRaw("issue, DATE_FORMAT(created_at, '%Y-%m-%d') as day")->orderBy('id', 'desc')->limit(20)->get();
+        return LotteryPlsResult::query()
+            ->selectRaw("issue, JSON_EXTRACT(result, '$.lotterySaleEndtime') as day")
+            ->orderBy('id', 'desc')
+            ->limit(20)
+            ->get()->transform(function ($item) {
+                $item->day = date("Y-m-d", strtotime(trim($item->day, '"')));
+                return $item;
+            });
     }
 }
