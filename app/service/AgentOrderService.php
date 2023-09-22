@@ -253,8 +253,8 @@ class AgentOrderService extends BaseService
 
         $totalNum = $model1->count();
         $totalAmount = $model2->sum('bet_amount');
-        $winningNum = $model3->where('winning_status', OrderWinningStatus::WINNING)->count();
-        $winningAmount = $model4->where('winning_status', OrderWinningStatus::WINNING)->sum('wining_amount');
+        $winningNum = $model3->whereIn('winning_status', [OrderWinningStatus::WINNING, OrderWinningStatus::REDEEM])->count();
+        $winningAmount = $model4->whereIn('winning_status', [OrderWinningStatus::WINNING, OrderWinningStatus::REDEEM])->sum('wining_amount');
 
         return [
             'total_num' => $totalNum,
