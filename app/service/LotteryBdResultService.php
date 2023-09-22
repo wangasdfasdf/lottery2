@@ -5,6 +5,7 @@ namespace app\service;
 use app\model\LotteryBdResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use support\Log;
 use function Symfony\Component\String\b;
 
 class LotteryBdResultService extends BaseService
@@ -37,7 +38,7 @@ class LotteryBdResultService extends BaseService
 
         $data = $body['data'];
 
-        dd($data);
+       Log::info(__METHOD__, $data);
 
         foreach ($data as $item) {
 
