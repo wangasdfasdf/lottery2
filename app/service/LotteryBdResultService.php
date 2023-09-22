@@ -24,7 +24,7 @@ class LotteryBdResultService extends BaseService
         $sp = 1;
         $client = new Client();
 
-        $result = $client->get($url,  ['query' => compact('user', 'secret', 'sp')]);
+        $result = $client->get($url, ['query' => compact('user', 'secret', 'sp')]);
 
         if ($result->getStatusCode() !== 200) {
             return;
@@ -38,25 +38,30 @@ class LotteryBdResultService extends BaseService
 
         $data = $body['data'];
 
-       Log::info(__METHOD__, $data);
 
-        foreach ($data as $item) {
+        foreach ($data as $itemss) {
 
-            /**
-             * @var LotteryBdResult $model
-             */
-            $model = LotteryBdResult::query()->firstOrCreate(['match_id' => $item['id'], 'issue' => $item['issue'], 'issue_num' => $item['issue_num']], []);
+            foreach ($itemss as $items){
+                foreach ($items as $item) {
 
-            $model->comp = $item['comp'];
-            $model->home = $item['home'];
-            $model->away = $item['away'];
-            $model->match_time = $item['match_time'];
-            $model->sell_status = $item['sell_status'];
-            $model->home_score = $item['home_score'];
-            $model->away_score = $item['away_score'];
-            $model->odds = array_merge($model->odds ?? [], $item['odds']);;
-            $model->sport_id = 1;
-            $model->save();
+                    /**
+                     * @var LotteryBdResult $model
+                     */
+                    $model = LotteryBdResult::query()->firstOrCreate(['match_id' => $item['id'], 'issue' => $item['issue'], 'issue_num' => $item['issue_num']], []);
+
+                    $model->comp = $item['comp'];
+                    $model->home = $item['home'];
+                    $model->away = $item['away'];
+                    $model->match_time = $item['match_time'];
+                    $model->sell_status = $item['sell_status'];
+                    $model->home_score = $item['home_score'];
+                    $model->away_score = $item['away_score'];
+                    $model->odds = array_merge($model->odds ?? [], $item['odds']);;
+                    $model->sport_id = 1;
+                    $model->save();
+                }
+            }
+
         }
 
     }

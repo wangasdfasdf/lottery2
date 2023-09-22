@@ -55,7 +55,7 @@ class Tests extends Command
     {
 
         //获取北单赛果
-        LotteryBdResultService::instance()->capture();
+//        LotteryBdResultService::instance()->capture();
         //获取北单胜负赛果
         LotteryBdSfResultService::instance()->capture();
         //获取竞彩赛果

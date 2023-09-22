@@ -15,10 +15,10 @@ class LotteryBdSfResultService extends BaseService
         $user   = config('nmsj.user');
         $secret = config('nmsj.secret');
         $url    = config('nmsj.db_sf_result_url');
-
+        $sp = 1;
         $client = new Client();
 
-        $result = $client->get($url,  ['query' => compact('user', 'secret')]);
+        $result = $client->get($url,  ['query' => compact('user', 'secret', 'sp')]);
 
         if ($result->getStatusCode() !== 200) {
             return;
@@ -31,6 +31,7 @@ class LotteryBdSfResultService extends BaseService
         }
 
         $data = $body['data'];
+
 
         foreach ($data as $item) {
 
