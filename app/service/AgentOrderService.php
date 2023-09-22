@@ -84,7 +84,7 @@ class AgentOrderService extends BaseService
 
             $order = parent::create($data);
             $order_ids[] = $order->id;
-//            $this->runOrderIsWinning($order);
+            $this->runOrderIsWinning($order);
 
             $data['detail'] = $tmp;
         }
