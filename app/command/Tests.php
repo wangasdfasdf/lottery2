@@ -54,12 +54,7 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        //获取北单赛果
-        LotteryBdResultService::instance()->capture();
-        //获取北单胜负赛果
-        LotteryBdSfResultService::instance()->capture();
-        //获取竞彩赛果
-        LotteryJcResultService::instance()->capture();
+        AgentOrderService::instance()->calculate();
         return self::SUCCESS;
     }
 
