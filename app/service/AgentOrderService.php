@@ -405,16 +405,14 @@ class AgentOrderService extends BaseService
             }
 
             if ($temAmount == 1) {
-                $tmpAmount = 2;
+                $tmpAmount = 2 * $order->bet_multiplier;
             } else {
-                $tmpAmount = \floor($temAmount * 0.65 * 2 * 100) / 100;
+                $tmpAmount = \floor($temAmount * 0.65 * 2 * 100 * $order->bet_multiplier) / 100;
             }
 
             if ($tmpAmount > 10000) {
                 $tmpAmount = $tmpAmount * 0.8;
             }
-
-            $tmpAmount = $order->bet_multiplier * $tmpAmount;
 
 
             $winingAmount += $tmpAmount;
