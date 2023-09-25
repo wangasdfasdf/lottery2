@@ -28,7 +28,7 @@ class AgentShopFilter extends QueryFilter
      */
     public function loginName($loginName)
     {
-        return $this->builder->where('login_name', $loginName);
+        return $this->builder->where('login_name', 'like', "%{$loginName}%" );
     }
 
 
@@ -64,7 +64,7 @@ class AgentShopFilter extends QueryFilter
      */
     public function name($name)
     {
-        return $this->builder->where('name', $name);
+        return $this->builder->where('name','like', "%{$name}%" );
     }
 
 
@@ -319,6 +319,22 @@ class AgentShopFilter extends QueryFilter
         return $this->builder->where('domain', $domain);
     }
 
+
+    /**
+     * 过滤名称
+     *
+     * @param $exceed
+     * @return mixed
+     */
+    public function exceed($exceed)
+    {
+        if ($exceed == 1 ){
+            return $this->builder->where('expiry_time', '<=', now());
+        }
+        if ($exceed == 2 ){
+            return $this->builder->where('expiry_time', '>', now());
+        }
+    }
 
 
 }
