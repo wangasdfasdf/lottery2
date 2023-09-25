@@ -299,7 +299,7 @@ class AgentOrderService extends BaseService
 
         $param = base64_encode(json_encode($data));
 
-        $filePath = base_path("order_info".time().mt_rand(1, 999).'.text');
+        $filePath = base_path("order_info" . time() . mt_rand(1, 999) . '.text');
 
         file_put_contents($filePath, $param);
 //        $str = sprintf("node %s --args=%s", base_path("print_server.js"), $param);

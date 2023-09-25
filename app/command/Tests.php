@@ -53,18 +53,20 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $f = 3.554;
-        //获取北单赛果
-        LotteryBdResultService::instance()->capture();
-        Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
-        //获取北单胜负赛果
-        LotteryBdSfResultService::instance()->capture();
-        Log::info("LotteryBdSfResultService", ['time' => now()->format('Y-m-d H:i:s')]);
-        //获取竞彩赛果
-        LotteryJcResultService::instance()->capture();
-        Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+        $f = 3.555;
 
-        dd(1);
+        dd(format_jc_amount($f));
+//        //获取北单赛果
+//        LotteryBdResultService::instance()->capture();
+//        Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+//        //获取北单胜负赛果
+//        LotteryBdSfResultService::instance()->capture();
+//        Log::info("LotteryBdSfResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+//        //获取竞彩赛果
+//        LotteryJcResultService::instance()->capture();
+//        Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+//
+//        dd(1);
         AgentOrderService::instance()->calculate();
         return self::SUCCESS;
     }

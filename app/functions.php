@@ -181,6 +181,6 @@ if (!function_exists('format_result_bf')) {
 if (!function_exists('format_jc_amount')) {
     function format_jc_amount($amount): float|int
     {
-        return number_format(round($amount, 2, PHP_ROUND_HALF_EVEN), 2, '.', '');
+        return number_format(round(floor($amount * 1000) / 10, 0, PHP_ROUND_HALF_EVEN) / 100, 2, '.', '');
     }
 }
