@@ -37,6 +37,7 @@ use support\Db;
  * @property string $type
  * @property string $winning_status
  * @property float $wining_amount
+ * @property float $original_wining_amount
  * @property int $is_past
  * @property string $serial_number
  * @property Carbon $created_at
@@ -113,6 +114,7 @@ class AgentOrder extends BaseModel
         'created_at', //
         'updated_at', //
         'deleted_at', //
+        'original_wining_amount', //
     ];
 
     public function createTable(int $agent_id): void

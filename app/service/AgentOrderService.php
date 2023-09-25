@@ -423,6 +423,7 @@ class AgentOrderService extends BaseService
         $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
 
         $order->wining_amount = abs($winingAmount);
+        $order->original_wining_amount = abs($winingAmount);
 
         $order->save();
     }
@@ -468,6 +469,7 @@ class AgentOrderService extends BaseService
 
         $order->winning_status = empty($totalAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
         $order->wining_amount = $totalAmount;
+        $order->original_wining_amount = $totalAmount;
         $order->save();
     }
 
@@ -634,6 +636,7 @@ class AgentOrderService extends BaseService
         aa:
         $order->winning_status = empty($winingAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
         $order->wining_amount = $winingAmount;
+        $order->original_wining_amount = $winingAmount;
         $order->save();
     }
 

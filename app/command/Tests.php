@@ -53,9 +53,9 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $f = 3.555;
-
-        dd(format_jc_amount($f));
+//        $f = 3.555;
+//
+//        dd(format_jc_amount($f));
 //        //获取北单赛果
 //        LotteryBdResultService::instance()->capture();
 //        Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
