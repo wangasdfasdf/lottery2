@@ -92,45 +92,51 @@ class LotteryJcService extends BaseService
 
         $client = new Client();
 
-        $result = $client->get($url, ['query' => [
-            'matchPage' => 1,
-            'matchBeginDate' => now()->subDays(2)->format("Y-m-d"),
-            'matchEndDate' => now()->format("Y-m-d"),
-            'leagueId' => '',
-            'pageSize' => 30,
-            'pageNo' => 1,
-            'isFix' => 0,
-            'pcOrWap' => 1,
-        ]]);
+        try {
+            $result = $client->get($url, ['query' => [
+                'matchPage' => 1,
+                'matchBeginDate' => now()->subDays(2)->format("Y-m-d"),
+                'matchEndDate' => now()->format("Y-m-d"),
+                'leagueId' => '',
+                'pageSize' => 30,
+                'pageNo' => 1,
+                'isFix' => 0,
+                'pcOrWap' => 1,
+            ]]);
 
-        if ($result->getStatusCode() != 200) {
-            return;
-        }
-
-        $data = json_decode((string)$result->getBody(), true);
-
-        $matchResult = Arr::get($data, 'value.matchResult', []);
-        foreach ($matchResult as $item) {
-
-            if ($item['sectionsNo999'] == '取消') {
-                LotteryJcResult::query()->firstOrCreate([
-                    'match_id' => $item['match_id'],
-                    'type' => 'jczq',
-                ], [
-                    'comp' => '',
-                    'home' => $item['allHomeTeam'],
-                    'away' => $item['allAwayTeam'],
-                    'short_comp' => '',
-                    'short_home' => '',
-                    'short_away' => '',
-                    'issue_num' => $item['matchNum'],
-                    'match_time' => 0,
-                    'home_score' => 0,
-                    'away_score' => 0,
-                    'half_home_score' => 0,
-                    'half_away_score' => 0,
-                ]);
+            if ($result->getStatusCode() != 200) {
+                return;
             }
+
+            $data = json_decode((string)$result->getBody(), true);
+
+            $matchResult = Arr::get($data, 'value.matchResult', []);
+            foreach ($matchResult as $item) {
+
+                if ($item['sectionsNo999'] == '取消') {
+                    LotteryJcResult::query()->firstOrCreate([
+                        'match_id' => $item['match_id'],
+                        'type' => 'jczq',
+                    ], [
+                        'comp' => '',
+                        'home' => $item['allHomeTeam'],
+                        'away' => $item['allAwayTeam'],
+                        'short_comp' => '',
+                        'short_home' => '',
+                        'short_away' => '',
+                        'issue_num' => $item['matchNum'],
+                        'match_time' => 0,
+                        'home_score' => 0,
+                        'away_score' => 0,
+                        'half_home_score' => 0,
+                        'half_away_score' => 0,
+                    ]);
+                }
+            }
+        } catch (\Exception $e){
+            Log::error(__METHOD__, [$e->getMessage()]);
         }
+
+
     }
 }
