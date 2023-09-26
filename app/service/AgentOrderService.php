@@ -241,9 +241,9 @@ class AgentOrderService extends BaseService
 
 
         $todayModel = AgentOrder::query()->whereDate('created_at', now()->format("Y-m-d"))
-        ->when(!empty($shopId), function (Builder $query) use ($shopId) {
-            $query->whereIn('shop_id', $shopId);
-        });
+            ->when(!empty($shopId), function (Builder $query) use ($shopId) {
+                $query->whereIn('shop_id', $shopId);
+            });
         $totalAmount2 = clone $todayModel;
 
         $model1 = clone $model;
@@ -407,13 +407,14 @@ class AgentOrderService extends BaseService
             if ($temAmount == 1) {
                 $tmpAmount = 2 * $order->bet_multiplier;
             } else {
-                $tmpAmount = \floor($temAmount * 0.65 * 2 * 100 * $order->bet_multiplier) / 100;
-            }
+                $tmpAmount = $temAmount * 0.65 * 2;
 
-            if ($tmpAmount > 10000) {
-                $tmpAmount = $tmpAmount * 0.8;
-            }
+                if ($tmpAmount > 10000) {
+                    $tmpAmount *= 0.8;
+                }
 
+                $tmpAmount = floor($tmpAmount * $order->bet_multiplier * 100) / 100;
+            }
 
             $winingAmount += $tmpAmount;
         }
