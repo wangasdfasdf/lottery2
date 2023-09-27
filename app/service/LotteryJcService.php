@@ -73,15 +73,10 @@ class LotteryJcService extends BaseService
         try {
             $result = $client->get($url, ['query' => $param]);
 
-            if ($result->getStatusCode() == 200) {
+            file_put_contents($path . $filename, (string)$result->getBody());
 
-                file_put_contents($path . $filename, (string)$result->getBody());
-            } else {
-                $this->putFile($url, $param, $name, $client);
-            }
         } catch (\Exception $exception) {
-            Log::info(__METHOD__, [$exception->getMessage()]);
-            $this->putFile($url, $param, $name, $client);
+            Log::info(__METHOD__, [$exception]);
         }
 
     }
@@ -133,7 +128,7 @@ class LotteryJcService extends BaseService
                     ]);
                 }
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             Log::error(__METHOD__, [$e->getMessage()]);
         }
 
