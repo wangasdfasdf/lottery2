@@ -21,13 +21,12 @@ class Task
         new Crontab('0 */10 * * * *', function () {
             //获取北单赛果
             LotteryBdResultService::instance()->capture();
-            Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+
             //获取北单胜负赛果
             LotteryBdSfResultService::instance()->capture();
-            Log::info("LotteryBdSfResultService", ['time' => now()->format('Y-m-d H:i:s')]);
             //获取竞彩赛果
             LotteryJcResultService::instance()->capture();
-            Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
+
         });
 
         new Crontab('3 */10 22,23 * * *', function () {
@@ -42,7 +41,7 @@ class Task
             AgentWalletPaymentLogService::instance()->capture();
         });
 
-        new Crontab("30-59 30 11-22 * * *", function () {
+        new Crontab("* 30-59 11-22 * * *", function () {
             //获取竞彩历史数据
             LotteryJcService::instance()->history();
         });
