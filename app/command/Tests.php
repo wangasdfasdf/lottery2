@@ -67,6 +67,8 @@ class Tests extends Command
 //        Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
 //
 //        dd(1);
+        LotteryJcService::instance()->history();
+        dd(1);
         AgentOrderService::instance()->calculate();
         return self::SUCCESS;
     }
