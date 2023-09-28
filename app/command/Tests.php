@@ -53,6 +53,15 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $this->setSuffix(5);;
+
+        /**
+         * @var AgentShop $shop
+         */
+        $shop = AgentShop::query()->first();
+
+        dd($shop->expiry_time, $shop->expiry_time->diff(now())->days);
+
 //        $f = 3.555;
 //
 //        dd(format_jc_amount($f));

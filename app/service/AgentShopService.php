@@ -103,6 +103,16 @@ class AgentShopService extends BaseService
             $this->throw('账户天数不足');
         }
 
+        if ($days < 0) {
+            if (now() >= $shop->expiry_time) {
+                $this->throw('扣除天数不足');
+            } else {
+                if (now()->diff($shop->expiry_time)->days < abs($days)) {
+                    $this->throw('扣除天数不足');
+                }
+            }
+        }
+
         $start_time = $shop->expiry_time;
 
         $shop->wallet_address = '';
