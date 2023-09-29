@@ -1,6 +1,8 @@
 <?php
+
 namespace app\service;
 
+use app\model\AgentOrder;
 use app\model\LotteryJcResult;
 use GuzzleHttp\Client;
 use support\Log;
@@ -11,13 +13,13 @@ class LotteryJcResultService extends BaseService
 
     public function capture(): void
     {
-        $user   = config('nmsj.user');
+        $user = config('nmsj.user');
         $secret = config('nmsj.secret');
-        $url    = config('nmsj.jc_result_url');
+        $url = config('nmsj.jc_result_url');
 
         $client = new Client();
 
-        $result = $client->get($url,  ['query' => compact('user', 'secret')]);
+        $result = $client->get($url, ['query' => compact('user', 'secret')]);
 
         if ($result->getStatusCode() !== 200) {
             return;
@@ -38,25 +40,34 @@ class LotteryJcResultService extends BaseService
             /**
              * @var LotteryJcResult $model
              */
-            $model                  = LotteryJcResult::query()->firstOrCreate(['type' => 'jczq', 'match_id' => $item['id']], []);
-            $model->comp            = $item['comp'];
-            $model->home            = $item['home'];
-            $model->away            = $item['away'];
-            $model->short_comp      = $item['short_comp'];
-            $model->short_home      = $item['short_home'];
-            $model->short_away      = $item['short_away'];
-            $model->issue_num       = $item['issue_num'];
-            $model->match_time      = $item['match_time'];
-            $model->home_score      = $item['home_score'];
-            $model->away_score      = $item['away_score'];
+            $model = LotteryJcResult::query()->firstOrCreate(['type' => 'jczq', 'match_id' => $item['id']], []);
+            $model->comp = $item['comp'];
+            $model->home = $item['home'];
+            $model->away = $item['away'];
+            $model->short_comp = $item['short_comp'];
+            $model->short_home = $item['short_home'];
+            $model->short_away = $item['short_away'];
+            $model->issue_num = $item['issue_num'];
+            $model->match_time = $item['match_time'];
+            $model->home_score = $item['home_score'];
+            $model->away_score = $item['away_score'];
             $model->half_home_score = $item['half_home_score'];
             $model->half_away_score = $item['half_away_score'];
-            $model->spf             = $item['spf'];
-            $model->rq              = $item['rq'];
-            $model->bf              = $item['bf'];
-            $model->jq              = $item['jq'];
-            $model->bqc             = $item['bqc'];
+            $model->spf = $item['spf'];
+            $model->rq = $item['rq'];
+            $model->bf = $item['bf'];
+            $model->jq = $item['jq'];
+            $model->bqc = $item['bqc'];
             $model->save();
+
+            if ($model->wasChanged()) {
+                $orders = AgentOrder::query()->where('type', 'jczq')->whereJsonContains('detail->match_ids', $model->match_id)->get();
+
+                foreach ($orders as $order) {
+                    AgentOrderService::instance()->runOrderIsWinning($order);
+                }
+
+            }
         }
 
         $jclq = $data['jclq'];
@@ -66,21 +77,21 @@ class LotteryJcResultService extends BaseService
             /**
              * @var LotteryJcResult $model
              */
-            $model                  = LotteryJcResult::query()->firstOrCreate(['type' => 'jclq', 'match_id' => $item['id']], []);
-            $model->comp            = $item['comp'];
-            $model->home            = $item['home'];
-            $model->away            = $item['away'];
-            $model->short_comp      = $item['short_comp'];
-            $model->short_home      = $item['short_home'];
-            $model->short_away      = $item['short_away'];
-            $model->issue_num       = $item['issue_num'];
-            $model->match_time      = $item['match_time'];
-            $model->home_score      = $item['home_score'];
-            $model->away_score      = $item['away_score'];
-            $model->sf              = $item['sf'];
-            $model->rf              = $item['rf'];
-            $model->sfc             = $item['sfc'];
-            $model->dxf             = $item['dxf'];
+            $model = LotteryJcResult::query()->firstOrCreate(['type' => 'jclq', 'match_id' => $item['id']], []);
+            $model->comp = $item['comp'];
+            $model->home = $item['home'];
+            $model->away = $item['away'];
+            $model->short_comp = $item['short_comp'];
+            $model->short_home = $item['short_home'];
+            $model->short_away = $item['short_away'];
+            $model->issue_num = $item['issue_num'];
+            $model->match_time = $item['match_time'];
+            $model->home_score = $item['home_score'];
+            $model->away_score = $item['away_score'];
+            $model->sf = $item['sf'];
+            $model->rf = $item['rf'];
+            $model->sfc = $item['sfc'];
+            $model->dxf = $item['dxf'];
             $model->save();
         }
     }

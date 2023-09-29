@@ -2,6 +2,7 @@
 
 namespace app\service;
 
+use app\model\AgentOrder;
 use app\model\LotteryBdResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
@@ -60,6 +61,18 @@ class LotteryBdResultService extends BaseService
                         $model->odds = array_merge($model->odds ?? [], $item['odds']);;
                         $model->sport_id = 1;
                         $model->save();
+
+                        if ($model->wasChanged()) {
+                            $orders = AgentOrder::query()->where('type', 'bjdc')
+                                ->whereJsonContains('detail->award_period', $model->issue)
+                                ->whereJsonContains('detail->matchno', $model->issue_num)
+                                ->get();
+
+                            foreach ($orders as $order) {
+                                AgentOrderService::instance()->runOrderIsWinning($order);
+                            }
+
+                        }
                     }
                 }
 

@@ -55,6 +55,12 @@ class Tests extends Command
     {
         $this->setSuffix(5);;
 
+
+        $order = AgentOrder::query()->whereJsonContains('detail->award_period', '23093')->whereJsonContains('detail->matchno', 95)->get();
+
+        dd($order->pluck('id'));
+
+        dd(1);
         /**
          * @var AgentShop $shop
          */
