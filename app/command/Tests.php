@@ -53,36 +53,36 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->setSuffix(5);;
-
-
-        $order = AgentOrder::query()->whereJsonContains('detail->award_period', '23093')->whereJsonContains('detail->matchno', 95)->get();
-
-        dd($order->pluck('id'));
-
-        dd(1);
-        /**
-         * @var AgentShop $shop
-         */
-        $shop = AgentShop::query()->first();
-
-        dd($shop->expiry_time, $shop->expiry_time->diff(now())->days);
+//        $this->setSuffix(5);;
+//
+//
+//        $order = AgentOrder::query()->whereJsonContains('detail->award_period', '23093')->whereJsonContains('detail->matchno', 95)->get();
+//
+//        dd($order->pluck('id'));
+//
+//        dd(1);
+//        /**
+//         * @var AgentShop $shop
+//         */
+//        $shop = AgentShop::query()->first();
+//
+//        dd($shop->expiry_time, $shop->expiry_time->diff(now())->days);
 
 //        $f = 3.555;
 //
 //        dd(format_jc_amount($f));
 //        //获取北单赛果
-//        LotteryBdResultService::instance()->capture();
+        LotteryBdResultService::instance()->capture();
 //        Log::info("LotteryBdResultService", ['time' => now()->format('Y-m-d H:i:s')]);
 //        //获取北单胜负赛果
-//        LotteryBdSfResultService::instance()->capture();
+        LotteryBdSfResultService::instance()->capture();
 //        Log::info("LotteryBdSfResultService", ['time' => now()->format('Y-m-d H:i:s')]);
 //        //获取竞彩赛果
-//        LotteryJcResultService::instance()->capture();
+        LotteryJcResultService::instance()->capture();
 //        Log::info("LotteryJcResultService", ['time' => now()->format('Y-m-d H:i:s')]);
 //
 //        dd(1);
-        LotteryJcService::instance()->history();
+//        LotteryJcService::instance()->history();
         dd(1);
         AgentOrderService::instance()->calculate();
         return self::SUCCESS;
