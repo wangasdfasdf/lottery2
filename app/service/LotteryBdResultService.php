@@ -2,6 +2,8 @@
 
 namespace app\service;
 
+use app\middleware\traits\SetSuffix;
+use app\model\Agent;
 use app\model\AgentOrder;
 use app\model\LotteryBdResult;
 use GuzzleHttp\Client;
@@ -11,6 +13,8 @@ use function Symfony\Component\String\b;
 
 class LotteryBdResultService extends BaseService
 {
+    use SetSuffix;
+
     public $model = 'app\model\LotteryBdResult';
 
 
@@ -63,14 +67,21 @@ class LotteryBdResultService extends BaseService
                         $model->save();
 
                         if ($model->wasChanged()) {
-                            $orders = AgentOrder::query()->where('type', 'bjdc')
-                                ->whereJsonContains('detail->award_period', $model->issue)
-                                ->whereJsonContains('detail->matchno', $model->issue_num)
-                                ->get();
+                            $ids = Agent::query()->pluck('id');
 
-                            foreach ($orders as $order) {
-                                AgentOrderService::instance()->runOrderIsWinning($order);
+                            foreach ($ids as $id) {
+                                $this->setSuffix($id);
+
+                                $orders = AgentOrder::query()->where('type', 'bjdc')
+                                    ->whereJsonContains('detail->award_period', $model->issue)
+                                    ->whereJsonContains('detail->matchno', $model->issue_num)
+                                    ->get();
+
+                                foreach ($orders as $order) {
+                                    AgentOrderService::instance()->runOrderIsWinning($order);
+                                }
                             }
+
 
                         }
                     }
