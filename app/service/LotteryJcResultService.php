@@ -2,6 +2,8 @@
 
 namespace app\service;
 
+use app\middleware\traits\SetSuffix;
+use app\model\Agent;
 use app\model\AgentOrder;
 use app\model\LotteryJcResult;
 use GuzzleHttp\Client;
@@ -9,6 +11,7 @@ use support\Log;
 
 class LotteryJcResultService extends BaseService
 {
+    use SetSuffix;
     public $model = 'app\model\LotteryJcResult';
 
     public function capture(): void
@@ -61,11 +64,19 @@ class LotteryJcResultService extends BaseService
             $model->save();
 
             if ($model->wasChanged()) {
-                $orders = AgentOrder::query()->where('type', 'jczq')->whereJsonContains('detail->match_ids', $model->match_id)->get();
 
-                foreach ($orders as $order) {
-                    AgentOrderService::instance()->runOrderIsWinning($order);
+                $ids = Agent::query()->pluck('id');
+
+                foreach ($ids as $id) {
+
+                    $this->setSuffix($id);
+                    $orders = AgentOrder::query()->where('type', 'jczq')->whereJsonContains('detail->match_ids', $model->match_id)->get();
+
+                    foreach ($orders as $order) {
+                        AgentOrderService::instance()->runOrderIsWinning($order);
+                    }
                 }
+
 
             }
         }
