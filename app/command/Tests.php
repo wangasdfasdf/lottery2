@@ -54,9 +54,9 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        LotteryJcService::instance()->history();
+//        LotteryJcService::instance()->history();
 //
-        dd(1);
+//        dd(1);
 //        $this->setSuffix(5);;
 //
 //
