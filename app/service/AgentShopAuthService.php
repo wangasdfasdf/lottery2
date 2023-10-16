@@ -40,8 +40,8 @@ class AgentShopAuthService extends BaseService
             $this->throw('密码错误');
         }
 
-        if (StatusEnum::DISABLE->value == $shop->status) {
-            $this->throw('账号已被禁用,请联系管理员');
+        if (StatusEnum::DISABLE->value == $shop->status || -1 == $shop->status) {
+            $this->throw('该账号被管理员禁用，请联系管理员');
         }
 
 
@@ -60,7 +60,7 @@ class AgentShopAuthService extends BaseService
             $shop->domain = $domain;
             $shop->save();
 
-            $object = 'machine/'.$shop->machine_id;
+            $object = 'machine/' . $shop->machine_id;
             $content = '{"domain":"' . $domain . '"}';
             $content = RasService::instance()->privateEncode($content);
             OssService::instance()->put($object, $content);
