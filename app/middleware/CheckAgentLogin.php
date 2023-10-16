@@ -2,7 +2,9 @@
 
 namespace app\middleware;
 
+use app\enum\StatusEnum;
 use app\middleware\traits\SetSuffix;
+use app\model\Agent;
 use app\model\AgentConfig;
 use app\model\AgentOrder;
 use app\model\AgentShop;
@@ -16,6 +18,7 @@ use Webman\Http\Request;
 class CheckAgentLogin implements MiddlewareInterface
 {
     use SetSuffix;
+
     public function process(Request $request, callable $next): Response
     {
         $token = $request->header('token');
@@ -26,6 +29,16 @@ class CheckAgentLogin implements MiddlewareInterface
 
         if (empty($agent_id)) {
             return \support\Response::res(401, '请重新登录', [], 401);
+        }
+
+        /**
+         * @var Agent $agent
+         */
+        $agent = Agent::query()->find($agent_id);
+
+        if ($agent->status == StatusEnum::DISABLE->value) {
+            return \support\Response::res(401, '该账号被管理员禁用,请联系管理员.', [], 200);
+
         }
 
         \request()->offSet('agent_id', $agent_id);

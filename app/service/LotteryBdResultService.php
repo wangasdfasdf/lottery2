@@ -81,8 +81,6 @@ class LotteryBdResultService extends BaseService
                                     AgentOrderService::instance()->runOrderIsWinning($order);
                                 }
                             }
-
-
                         }
                     }
                 }
