@@ -37,7 +37,7 @@ class CheckAgentLogin implements MiddlewareInterface
         $agent = Agent::query()->find($agent_id);
 
         if ($agent->status == StatusEnum::DISABLE->value) {
-            return \support\Response::res(401, '该账号被管理员禁用,请联系管理员.', [], 200);
+            return \support\Response::res(401, '该账号被管理员禁用,请联系管理员.', [], 401);
 
         }
 

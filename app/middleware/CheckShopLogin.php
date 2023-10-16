@@ -38,7 +38,7 @@ class CheckShopLogin implements MiddlewareInterface
         $shop = AgentShop::query()->where('id', $agent_shop_id)->first();
 
         if ($shop->status == -1) {
-            return \support\Response::res(401, '该账号被管理员禁用,请联系管理员.', [], 200);
+            return \support\Response::res(401, '该账号被管理员禁用,请联系管理员.', [], 401);
 
         }
 
