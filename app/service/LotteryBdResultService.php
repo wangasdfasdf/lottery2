@@ -72,14 +72,14 @@ class LotteryBdResultService extends BaseService
                             foreach ($ids as $id) {
                                 $this->setSuffix($id);
 
-                                $orders = AgentOrder::query()->where('type', 'bjdc')
+                                AgentOrder::query()->where('type', 'bjdc')
                                     ->whereJsonContains('detail->award_period', $model->issue)
                                     ->whereJsonContains('detail->matchno', $model->issue_num)
-                                    ->get();
-
-                                foreach ($orders as $order) {
-                                    AgentOrderService::instance()->runOrderIsWinning($order);
-                                }
+                                    ->update([
+                                        'winning_status' => 'undrawn',
+                                        'wining_amount' => '0',
+                                        'original_wining_amount' => '0',
+                                    ]);
                             }
                         }
                     }

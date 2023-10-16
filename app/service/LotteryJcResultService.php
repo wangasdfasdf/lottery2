@@ -12,6 +12,7 @@ use support\Log;
 class LotteryJcResultService extends BaseService
 {
     use SetSuffix;
+
     public $model = 'app\model\LotteryJcResult';
 
     public function capture(): void
@@ -70,11 +71,13 @@ class LotteryJcResultService extends BaseService
                 foreach ($ids as $id) {
 
                     $this->setSuffix($id);
-                    $orders = AgentOrder::query()->where('type', 'jczq')->whereJsonContains('detail->match_ids', $model->match_id)->get();
-
-                    foreach ($orders as $order) {
-                        AgentOrderService::instance()->runOrderIsWinning($order);
-                    }
+                    AgentOrder::query()->where('type', 'jczq')
+                        ->whereJsonContains('detail->match_ids', $model->match_id)
+                        ->update([
+                            'winning_status' => 'undrawn',
+                            'wining_amount' => '0',
+                            'original_wining_amount' => '0',
+                        ]);
                 }
 
 
