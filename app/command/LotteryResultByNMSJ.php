@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LotteryResultByNMSJ extends Command
 {
-    protected static $defaultName = 'lottery:result:by:nmsj';
+    protected static $defaultName = 'lottery:result';
     protected static $defaultDescription = 'LotteryResultByNMSJ';
 
     /**
