@@ -67,6 +67,7 @@ class LotteryJcResultService extends BaseService
             $model->save();
 
             if ($model->wasChanged()) {
+                Log::info(__METHOD__, ['match_id' => $model->match_id, 'type' => 'jczq', 'id' => $model->id, 'table' => $model->getTable()]);
                 Redis::send(QueueKey::RECALCULATE_LOTTERY->value, ['match_id' => $model->match_id, 'type' => 'jczq']);
 
             }

@@ -69,6 +69,7 @@ class LotteryBdResultService extends BaseService
                         $model->save();
 
                         if ($model->wasChanged()) {
+                            Log::info(__METHOD__, ['issue' => $model->issue, 'issue_num' => $model->issue_num, 'id' => $model->id, 'table' => $model->getTable(), 'type' => 'bd']);
                             Redis::send(QueueKey::RECALCULATE_LOTTERY->value, ['issue' => $model->issue, 'issue_num' => $model->issue_num, 'type' => 'bd']);
                         }
                     }
