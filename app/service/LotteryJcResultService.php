@@ -64,24 +64,24 @@ class LotteryJcResultService extends BaseService
             $model->bqc = $item['bqc'];
             $model->save();
 
-            if ($model->wasChanged()) {
-
-                $ids = Agent::query()->pluck('id');
-
-                foreach ($ids as $id) {
-
-                    $this->setSuffix($id);
-                    AgentOrder::query()->where('type', 'jczq')
-                        ->whereJsonContains('detail->match_ids', $model->match_id)
-                        ->update([
-                            'winning_status' => 'undrawn',
-                            'wining_amount' => '0',
-                            'original_wining_amount' => '0',
-                        ]);
-                }
-
-
-            }
+//            if ($model->wasChanged()) {
+//
+//                $ids = Agent::query()->pluck('id');
+//
+//                foreach ($ids as $id) {
+//
+//                    $this->setSuffix($id);
+//                    AgentOrder::query()->where('type', 'jczq')
+//                        ->whereJsonContains('detail->match_ids', $model->match_id)
+//                        ->update([
+//                            'winning_status' => 'undrawn',
+//                            'wining_amount' => '0',
+//                            'original_wining_amount' => '0',
+//                        ]);
+//                }
+//
+//
+//            }
         }
 
         $jclq = $data['jclq'];

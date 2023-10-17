@@ -66,22 +66,22 @@ class LotteryBdResultService extends BaseService
                         $model->sport_id = 1;
                         $model->save();
 
-                        if ($model->wasChanged()) {
-                            $ids = Agent::query()->pluck('id');
-
-                            foreach ($ids as $id) {
-                                $this->setSuffix($id);
-
-                                AgentOrder::query()->where('type', 'bjdc')
-                                    ->whereJsonContains('detail->award_period', $model->issue)
-                                    ->whereJsonContains('detail->matchno', $model->issue_num)
-                                    ->update([
-                                        'winning_status' => 'undrawn',
-                                        'wining_amount' => '0',
-                                        'original_wining_amount' => '0',
-                                    ]);
-                            }
-                        }
+//                        if ($model->wasChanged()) {
+//                            $ids = Agent::query()->pluck('id');
+//
+//                            foreach ($ids as $id) {
+//                                $this->setSuffix($id);
+//
+//                                AgentOrder::query()->where('type', 'bjdc')
+//                                    ->whereJsonContains('detail->award_period', $model->issue)
+//                                    ->whereJsonContains('detail->matchno', $model->issue_num)
+//                                    ->update([
+//                                        'winning_status' => 'undrawn',
+//                                        'wining_amount' => '0',
+//                                        'original_wining_amount' => '0',
+//                                    ]);
+//                            }
+//                        }
                     }
                 }
 
