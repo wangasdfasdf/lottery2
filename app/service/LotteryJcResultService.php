@@ -2,12 +2,14 @@
 
 namespace app\service;
 
+use app\enum\QueueKey;
 use app\middleware\traits\SetSuffix;
 use app\model\Agent;
 use app\model\AgentOrder;
 use app\model\LotteryJcResult;
 use GuzzleHttp\Client;
 use support\Log;
+use Webman\RedisQueue\Redis;
 
 class LotteryJcResultService extends BaseService
 {
@@ -64,24 +66,10 @@ class LotteryJcResultService extends BaseService
             $model->bqc = $item['bqc'];
             $model->save();
 
-//            if ($model->wasChanged()) {
-//
-//                $ids = Agent::query()->pluck('id');
-//
-//                foreach ($ids as $id) {
-//
-//                    $this->setSuffix($id);
-//                    AgentOrder::query()->where('type', 'jczq')
-//                        ->whereJsonContains('detail->match_ids', $model->match_id)
-//                        ->update([
-//                            'winning_status' => 'undrawn',
-//                            'wining_amount' => '0',
-//                            'original_wining_amount' => '0',
-//                        ]);
-//                }
-//
-//
-//            }
+            if ($model->wasChanged()) {
+                Redis::send(QueueKey::RECALCULATE_LOTTERY->value, ['match_id' => $model->match_id, 'type' => 'jczq']);
+
+            }
         }
 
         $jclq = $data['jclq'];

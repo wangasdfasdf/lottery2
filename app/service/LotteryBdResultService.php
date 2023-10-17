@@ -2,6 +2,7 @@
 
 namespace app\service;
 
+use app\enum\QueueKey;
 use app\middleware\traits\SetSuffix;
 use app\model\Agent;
 use app\model\AgentOrder;
@@ -9,6 +10,7 @@ use app\model\LotteryBdResult;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use support\Log;
+use Webman\RedisQueue\Redis;
 use function Symfony\Component\String\b;
 
 class LotteryBdResultService extends BaseService
@@ -66,22 +68,9 @@ class LotteryBdResultService extends BaseService
                         $model->sport_id = 1;
                         $model->save();
 
-//                        if ($model->wasChanged()) {
-//                            $ids = Agent::query()->pluck('id');
-//
-//                            foreach ($ids as $id) {
-//                                $this->setSuffix($id);
-//
-//                                AgentOrder::query()->where('type', 'bjdc')
-//                                    ->whereJsonContains('detail->award_period', $model->issue)
-//                                    ->whereJsonContains('detail->matchno', $model->issue_num)
-//                                    ->update([
-//                                        'winning_status' => 'undrawn',
-//                                        'wining_amount' => '0',
-//                                        'original_wining_amount' => '0',
-//                                    ]);
-//                            }
-//                        }
+                        if ($model->wasChanged()) {
+                            Redis::send(QueueKey::RECALCULATE_LOTTERY->value, ['issue' => $model->issue, 'issue_num' => $model->issue_num, 'type' => 'bd']);
+                        }
                     }
                 }
 
