@@ -36,29 +36,29 @@ class Task
             LotteryPlwResultService::instance()->capture();
         });
 
-        new Crontab("0 * * * * *", function () {
-            //获取代理充值结果
-            AgentWalletPaymentLogService::instance()->capture();
-        });
+//        new Crontab("0 * * * * *", function () {
+//            //获取代理充值结果
+//            AgentWalletPaymentLogService::instance()->capture();
+//        });
 
-        new Crontab("* 30-59 11-22 * * *", function () {
-            //获取竞彩历史数据
-            LotteryJcService::instance()->history();
-        });
+//        new Crontab("* 30-59 11-22 * * *", function () {
+//            //获取竞彩历史数据
+//            LotteryJcService::instance()->history();
+//        });
 
         new Crontab("0 30 * * * *", function () {
             //获取取消比赛的数据
             LotteryJcService::instance()->syncCancelLottery();
         });
 
-        new Crontab("0 * * * * *", function () {
-            //抓取代理充值
-            AgentShopWalletPaymentLogService::instance()->capture();
-        });
+//        new Crontab("0 * * * * *", function () {
+//            //抓取代理充值
+//            AgentShopWalletPaymentLogService::instance()->capture();
+//        });
 
-        new Crontab("0 * * * * *", function () {
-            //计算是否中奖
-            AgentOrderService::instance()->calculate();
-        });
+//        new Crontab("0 * * * * *", function () {
+//            //计算是否中奖
+//            AgentOrderService::instance()->calculate();
+//        });
     }
 }

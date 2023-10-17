@@ -44,4 +44,14 @@ return [
     'task' =>[
         'handler' =>  \process\Task::class
     ],
+    'task1' =>[
+        'handler' =>  \process\Task1::class
+    ],
+    'task2' =>[
+        'handler' =>  \process\Task2::class
+    ],
+
+    'task3' =>[
+        'handler' =>  \process\Task3::class
+    ],
 ];
