@@ -99,7 +99,6 @@ class LotteryJcService extends BaseService
                 'pcOrWap' => 1,
             ]]);
 
-            var_dump($result->getStatusCode());
             if ($result->getStatusCode() != 200) {
                 return;
             }
@@ -110,7 +109,7 @@ class LotteryJcService extends BaseService
 
 
             foreach ($matchResult as $item) {
-                var_dump($item['sectionsNo999']);
+
                 if (in_array($item['sectionsNo999'], ['取消', '无效场次'])) {
                     LotteryJcResult::query()->firstOrCreate([
                         'match_id' => $item['matchId'],
