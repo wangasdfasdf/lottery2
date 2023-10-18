@@ -99,6 +99,7 @@ class LotteryJcService extends BaseService
                 'pcOrWap' => 1,
             ]]);
 
+            var_dump($result->getStatusCode());
             if ($result->getStatusCode() != 200) {
                 return;
             }
@@ -106,11 +107,13 @@ class LotteryJcService extends BaseService
             $data = json_decode((string)$result->getBody(), true);
 
             $matchResult = Arr::get($data, 'value.matchResult', []);
-            foreach ($matchResult as $item) {
 
-                if ($item['sectionsNo999'] == '取消') {
+
+            foreach ($matchResult as $item) {
+                var_dump($item['sectionsNo999']);
+                if (in_array($item['sectionsNo999'], ['取消', '无效场次'])) {
                     LotteryJcResult::query()->firstOrCreate([
-                        'match_id' => $item['match_id'],
+                        'match_id' => $item['matchId'],
                         'type' => 'jczq',
                     ], [
                         'comp' => '',
