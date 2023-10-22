@@ -397,6 +397,8 @@ class AgentOrderService extends BaseService
 
                 $resultItem = $lotteryResult->firstWhere('issue_num', $value['match_no']);
 
+                Log::info(__METHOD__, [$order->id]);
+
                 $odds = $resultItem->odds;
 
                 list($result, $ps) = $this->checkBdResult($column, $value['result'], $odds[$column]);
