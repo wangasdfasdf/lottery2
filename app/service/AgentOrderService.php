@@ -403,6 +403,10 @@ class AgentOrderService extends BaseService
 
                 list($result, $ps) = $this->checkBdResult($column, $value['result'], $odds[$column]);
 
+                var_dump($ps,  $value['match_no']);
+
+                Log::info(__METHOD__, [$ps]);
+
                 $temAmount *= $ps;
             }
 
@@ -648,7 +652,7 @@ class AgentOrderService extends BaseService
 
     private function checkBdResult(string $type, mixed $bet, array $result)
     {
-        if ($result['rb1'] == '*' || (isset($result['bf2']) && $result['rb2'] == '*')) {
+        if ($result['rb1'] == '*' || (isset($result['rb2']) && $result['rb2'] == '*')) {
             return [true, 1];
         }
 
