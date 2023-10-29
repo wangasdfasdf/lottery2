@@ -178,6 +178,19 @@ if (!function_exists('format_result_bf')) {
     }
 }
 
+if (!function_exists('format_result_bd_jq')) {
+    function format_result_bd_jq($r): string
+    {
+        $r = (int)$r;
+
+        if ($r >= 7) {
+            return "7+";
+        } else {
+            return $r;
+        }
+    }
+}
+
 if (!function_exists('format_jc_amount')) {
     function format_jc_amount($amount): float|int
     {

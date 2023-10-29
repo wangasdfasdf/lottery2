@@ -53,6 +53,9 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $s = '7+';
+
+        dd((int)$s);
 
         //获取排列3赛果
         LotteryPlsResultService::instance()->capture();

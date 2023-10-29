@@ -673,7 +673,7 @@ class AgentOrderService extends BaseService
 
         if ($type == 'jq') {
             return match (true) {
-                $bet == $result['rb1'] => [true, $result['sp']],
+                $bet == format_result_bd_jq($result['rb1']) => [true, $result['sp']],
                 default => [false, 0],
             };
         }
