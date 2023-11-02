@@ -536,6 +536,7 @@ class AgentOrderService extends BaseService
                 $winingAmount = match ($type) {
                     '2' => $result->amount2,
                     '3' => $result->amount3,
+                    '1' => $result->amount1,
                 };
             }
         }
