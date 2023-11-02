@@ -53,7 +53,8 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $s = '7+';
+        AgentOrderService::instance()->calculate();
+        dd(1);
 
         dd((int)$s);
 
