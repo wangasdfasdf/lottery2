@@ -325,7 +325,12 @@ class AgentOrderService extends BaseService
 
             AgentOrder::query()->where('winning_status', OrderWinningStatus::UNDRAWN)->chunkById(100, function ($orders) {
                 foreach ($orders as $order) {
-                    $this->runOrderIsWinning($order);;
+                    try {
+
+                        $this->runOrderIsWinning($order);;
+                    } catch (\Exception $exception) {
+
+                    }
                 }
             });
         }
