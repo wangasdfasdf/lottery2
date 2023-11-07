@@ -469,7 +469,6 @@ class AgentOrderService extends BaseService
                 $odds *= $ps;
             }
 
-
             $totalAmount += format_jc_amount(2 * $odds) * $order->bet_multiplier;
         }
 

@@ -29,6 +29,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
 use Webman\RedisQueue\Redis;
+use function DI\string;
 
 
 class Tests extends Command
@@ -53,21 +54,16 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        AgentOrderService::instance()->calculate();
-        dd(1);
+//
+//        $aa = format_jc_amount(21.3);
+//
+//        dd($aa);
+//
 
-        dd((int)$s);
-
-        //获取排列3赛果
-        LotteryPlsResultService::instance()->capture();
-        //获取排列5赛果
-        LotteryPlwResultService::instance()->capture();
-
-        dd(1);
         $this->setSuffix(5);
-        $order = AgentOrder::query()->find(208510);
+        $order = AgentOrder::query()->find(418829);
 
-        AgentOrderService::instance()->calculateBjdc($order);
+        AgentOrderService::instance()->calculateFootball($order);
 
 
         dd(1);

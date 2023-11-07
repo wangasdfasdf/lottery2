@@ -45,7 +45,8 @@
     "guzzlehttp/guzzle": "^7.7",
     "workerman/crontab": "^1.0",
     "webman/redis-queue": "^1.2",
-    "aliyuncs/oss-sdk-php": "^2.6"
+    "aliyuncs/oss-sdk-php": "^2.6",
+    "ext-bcmath": "*"
   },
   "suggest": {
     "ext-event": "For better performance. "

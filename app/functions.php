@@ -194,6 +194,20 @@ if (!function_exists('format_result_bd_jq')) {
 if (!function_exists('format_jc_amount')) {
     function format_jc_amount($amount): float|int
     {
-        return number_format(round(floor($amount * 1000) / 10, 0, PHP_ROUND_HALF_EVEN) / 100, 2, '.', '');
+        $io = $amount * 100;
+        $i = (string)($amount * 1000);
+
+        $len = strlen($i);
+
+        $i1 = (int)$i[$len - 1];
+        $i2 = (int)$i[$len - 2];
+
+        if ($i1 != 5) {
+            return round($amount, 2);
+        } else {
+            $n = $i2 & 1 ? ceil($io) : floor($io);
+
+            return bcdiv($n, 100, 2);
+        }
     }
 }
