@@ -195,7 +195,7 @@ if (!function_exists('format_jc_amount')) {
     function format_jc_amount($amount): float|int
     {
         $io = $amount * 100;
-        $i = (string)($amount * 1000);
+        $i = (string)(int)($amount * 1000);
 
         $len = strlen($i);
 
@@ -206,7 +206,6 @@ if (!function_exists('format_jc_amount')) {
             return round($amount, 2);
         } else {
             $n = $i2 & 1 ? ceil($io) : floor($io);
-
             return bcdiv($n, 100, 2);
         }
     }
