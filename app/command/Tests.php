@@ -55,6 +55,14 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 //
+
+
+
+        //获取排列3赛果
+        LotteryPlsResultService::instance()->capture();
+        //获取排列5赛果
+        LotteryPlwResultService::instance()->capture();
+        dd(1);
 //        $aa = format_jc_amount(21.3);
 //
 //        dd($aa);
