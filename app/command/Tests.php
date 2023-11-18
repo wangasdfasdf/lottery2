@@ -54,9 +54,16 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-//
+       $this->setSuffix(5);
 
+        /**
+         * @var AgentOrder $order
+         */
+        $order = AgentOrder::query()->find(557144);
 
+        AgentOrderService::instance()->calculateBjdc($order);
+
+        dd(2);
 
         //获取排列3赛果
         LotteryPlsResultService::instance()->capture();

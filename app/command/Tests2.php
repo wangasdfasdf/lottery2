@@ -2,7 +2,10 @@
 
 namespace app\command;
 
+use app\middleware\traits\SetSuffix;
+use app\model\AgentOrder;
 use app\model\AgentShop;
+use app\service\AgentOrderService;
 use app\service\AgentService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,6 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class Tests2 extends Command
 {
+    use SetSuffix;
     protected static $defaultName = 'tests2';
     protected static $defaultDescription = 'Tests';
 
@@ -31,12 +35,15 @@ class Tests2 extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-//        AgentShop::setTableSuffix(2);
-        for ($i = 0; $i < 10; $i++) {
-            $model = AgentShop::query()->dd();
-            $output->writeln($model->id);
-            sleep(1);
-        }
+        AgentShop::setTableSuffix(5);
+
+        /**
+         * @var AgentOrder $order
+         */
+        $order = AgentOrder::query()->find(557144);
+
+        dd(1);
+        AgentOrderService::instance()->calculateBjdc($order);
 
         return self::SUCCESS;
     }
