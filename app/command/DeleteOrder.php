@@ -39,7 +39,7 @@ class DeleteOrder extends Command
         foreach ($agentIds as $id) {
             $this->setSuffix($id);
 
-            AgentOrder::query()->where('created_at', '<', now()->subDays(8)->format('Y-m-d H:i:s'))->delete();
+            AgentOrder::query()->where('created_at', '<', now()->subDays(8)->format('Y-m-d H:i:s'))->forceDelete();
         }
 
         $output->writeln('Hello DeleteOrder');
