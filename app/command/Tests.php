@@ -54,6 +54,11 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+
+
+        AgentOrderService::instance()->calculate();
+        dd( 1);
+
        $this->setSuffix(5);
 
         /**
