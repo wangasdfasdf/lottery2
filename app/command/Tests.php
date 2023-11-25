@@ -55,18 +55,20 @@ class Tests extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-
-        AgentOrderService::instance()->calculate();
-        dd( 1);
+//        $str ="+1";
+//
+//        dd(abs($str));
+//
 
        $this->setSuffix(5);
 
         /**
          * @var AgentOrder $order
          */
-        $order = AgentOrder::query()->find(557144);
+        $order = AgentOrder::query()->find(623539);
 
-        AgentOrderService::instance()->calculateBjdc($order);
+
+        AgentOrderService::instance()->calculateFootball($order);
 
         dd(2);
 

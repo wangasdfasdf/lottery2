@@ -452,8 +452,6 @@ class AgentOrderService extends BaseService
         $result = LotteryJcResult::query()->whereIn('match_id', $matchIds)->where('type', $type)->get();
 
 
-        Log::info(__METHOD__,[$order->id, $order->getTable()]);
-
         if ($result->count() != count($matchIds)) {
             return;
         }
