@@ -440,6 +440,7 @@ class AgentOrderService extends BaseService
         $detail = $order->detail;
         $matchIds = Arr::get($detail, 'match_ids', []);
 
+        Log::info(__METHOD__, [$order->id, $order->getTable()]);
         //押注详情
         $content = Arr::get($detail, 'detail', []);
 
