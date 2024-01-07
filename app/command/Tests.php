@@ -61,7 +61,7 @@ class Tests extends Command
         AgentOrderService::instance()->calculateFootball($order);
 
 
-        dd(1);
+        dd(2);
         AgentOrderService::instance()->calculate();
         dd(1);
 

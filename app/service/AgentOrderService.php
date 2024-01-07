@@ -472,7 +472,7 @@ class AgentOrderService extends BaseService
 
             $totalAmount += format_jc_amount(2 * $odds) * $order->bet_multiplier;
         }
-dd($totalAmount);
+
         $order->winning_status = empty($totalAmount) ? OrderWinningStatus::NOT_WON : OrderWinningStatus::WINNING;
         $order->wining_amount = $totalAmount;
         $order->original_wining_amount = $totalAmount;
