@@ -54,28 +54,14 @@ class Tests extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        LotteryPlsResultService::instance()->capture();
-        //获取排列5赛果
-        LotteryPlwResultService::instance()->capture();
+
+        $this->setSuffix(5);
+        $order = AgentOrder::query()->find(1203964);
+
+        AgentOrderService::instance()->calculateFootball($order);
+
+
         dd(1);
-
-        //获取排列3赛果
-//        LotteryPlsResultService::instance()->capture();
-//        //获取排列5赛果
-//        LotteryPlwResultService::instance()->capture();
-//        dd(1);
-////        $aa = format_jc_amount(21.3);
-////
-////        dd($aa);
-////
-//
-//        $this->setSuffix(5);
-//        $order = AgentOrder::query()->find(435301);
-//
-//        AgentOrderService::instance()->calculateFootball($order);
-//
-
-//        dd(1);
         AgentOrderService::instance()->calculate();
         dd(1);
 
